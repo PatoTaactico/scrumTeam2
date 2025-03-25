@@ -58,6 +58,18 @@ public class EmpleadosGUI {
                 clear();
             }
         });
+        table1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int filaSeleccionada = table1.getSelectedRow();
+                if (filaSeleccionada != -1) {
+                    textField1.setText(table1.getValueAt(filaSeleccionada, 0).toString());
+                    textField2.setText(table1.getValueAt(filaSeleccionada, 1).toString());
+                    comboBox1.setSelectedItem(table1.getValueAt(filaSeleccionada, 2).toString());
+                    textField3.setText(table1.getValueAt(filaSeleccionada, 3).toString());
+                }
+            }
+        });
     }
     public void clear() {
         textField1.setText("");
