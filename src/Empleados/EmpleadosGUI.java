@@ -44,8 +44,21 @@ public class EmpleadosGUI {
                 clear();
             }
         });
-    }
+        actualizarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = textField2.getText();
+                String cargo = (String) comboBox1.getSelectedItem();
+                double salario = Double.parseDouble(textField3.getText());
+                int id_empleado = Integer.parseInt(textField1.getText());
 
+                Empleados empleados = new Empleados(id_empleado, nombre, cargo, salario);
+                empleadosDAO.actualizar(empleados);
+                obtenerDatos();
+                clear();
+            }
+        });
+    }
     public void clear() {
         textField1.setText("");
         textField2.setText("");
@@ -83,7 +96,6 @@ public class EmpleadosGUI {
             e.printStackTrace();
         }
     }
-
     public static void main(String[] args) {
         JFrame frame = new JFrame("Empleados");
         frame.setContentPane(new EmpleadosGUI().main);
