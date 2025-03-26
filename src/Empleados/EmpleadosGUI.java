@@ -58,6 +58,15 @@ public class EmpleadosGUI {
                 clear();
             }
         });
+        eliminarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id_empleado = Integer.parseInt(textField1.getText());
+                empleadosDAO.eliminar(id_empleado);
+                obtenerDatos();
+                clear();
+            }
+        });
         table1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -116,6 +125,5 @@ public class EmpleadosGUI {
         frame.setVisible(true);
         frame.setSize(800, 700);
         frame.setResizable(false);
-
     }
 }
