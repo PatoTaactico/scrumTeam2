@@ -96,7 +96,7 @@
           <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Consultar"/>
+          <text value="Contratar Empleado"/>
         </properties>
       </component>
       <component id="45c3a" class="javax.swing.JButton" binding="actualizarButton" default-binding="true">
@@ -104,7 +104,7 @@
           <grid row="10" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Actualizar"/>
+          <text value="Actualizar Estado"/>
         </properties>
       </component>
       <component id="32071" class="javax.swing.JButton" binding="eliminarButton" default-binding="true">
@@ -112,7 +112,7 @@
           <grid row="11" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Eliminar"/>
+          <text value="Despedir Empleado"/>
         </properties>
       </component>
     </children>
