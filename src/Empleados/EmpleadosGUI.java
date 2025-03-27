@@ -36,7 +36,7 @@ public class EmpleadosGUI {
             public void actionPerformed(ActionEvent e) {
                 String nombre = textField2.getText();
                 String cargo = (String) comboBox1.getSelectedItem();
-                double salario = Double.parseDouble(textField3.getText());
+                int salario = Integer.parseInt(textField3.getText());
 
                 Empleados empleados = new Empleados(0, nombre, cargo, salario);
                 empleadosDAO.agregar(empleados);
@@ -49,7 +49,7 @@ public class EmpleadosGUI {
             public void actionPerformed(ActionEvent e) {
                 String nombre = textField2.getText();
                 String cargo = (String) comboBox1.getSelectedItem();
-                double salario = Double.parseDouble(textField3.getText());
+                int salario = Integer.parseInt(textField3.getText());
                 int id_empleado = Integer.parseInt(textField1.getText());
 
                 Empleados empleados = new Empleados(id_empleado, nombre, cargo, salario);
