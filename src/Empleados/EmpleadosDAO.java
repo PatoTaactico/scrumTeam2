@@ -35,7 +35,7 @@ public class EmpleadosDAO
     }
     public void actualizar(Empleados empleados){
         Connection con = conexionBD.getConnection();
-        String query = "UPDATE empleados set nombre = ?, cargo = ?, salario = ? WHERE id = ?";
+        String query = "UPDATE empleados SET nombre = ?, cargo = ?, salario = ? WHERE id_empleado = ?";
 
         try{
             PreparedStatement pst = con.prepareStatement(query);
