@@ -144,7 +144,7 @@
         </constraints>
         <properties>
           <background color="-16149346"/>
-          <text value="agregar"/>
+          <text value="agregar proveedor"/>
         </properties>
       </component>
       <component id="44cb4" class="javax.swing.JButton" binding="actualizarButton" default-binding="true">

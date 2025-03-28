@@ -143,3 +143,5 @@ public class ProveedoresGUI {
         frame.setResizable(false);
     }
 }
+
+//1
