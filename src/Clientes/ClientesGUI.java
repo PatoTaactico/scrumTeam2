@@ -2,7 +2,6 @@ package Clientes;
 
 import Conexion.ConexionBD;
 import Empleados.Empleados;
-import Empleados.EmpleadosDAO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -43,8 +42,9 @@ public class ClientesGUI {
                 String telefono = textField3.getText();
                 String direccion = textField4.getText();
                 String correo = textField5.getText();
+
                 Clientes clientes = new Clientes(0, nombre, telefono, direccion, correo);
-               clientesDAO.agregar(clientes);
+                clientesDAO.agregar(clientes);
                 obtenerDatos();
                 clear();
             }
@@ -52,24 +52,25 @@ public class ClientesGUI {
         actualizarButton.addActionListener(new ActionListener()
         {
             @Override
-        public void actionPerformed(ActionEvent e)
-            {
-            String nombre = textField2.getText();
-            String telefono = textField3.getText();
-            String direccion = textField4.getText();
-            String correo = textField5.getText();
-            Clientes clientes = new Clientes(0, nombre, telefono, direccion, correo);
-            clientesDAO.agregar(clientes);
-            obtenerDatos();
-            clear();
+            public void actionPerformed(ActionEvent e) {
+                String nombre = textField2.getText();
+                String telefono = textField3.getText();
+                String direccion = textField4.getText();
+                String correo = textField5.getText();
+                int id_cliente = Integer.parseInt(textField1.getText());
+
+                Clientes clientes = new Clientes(id_cliente, nombre, telefono, direccion, correo);
+                clientesDAO.actualizar(clientes);
+                obtenerDatos();
+                clear();
             }
         });
         eliminarButton.addActionListener(new ActionListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 int id_cliente = Integer.parseInt(textField1.getText());
+
                 clientesDAO.eliminar(id_cliente);
                 obtenerDatos();
                 clear();
@@ -86,6 +87,8 @@ public class ClientesGUI {
                     textField1.setText(table1.getValueAt(filaSeleccionada, 0).toString());
                     textField2.setText(table1.getValueAt(filaSeleccionada, 1).toString());
                     textField3.setText(table1.getValueAt(filaSeleccionada, 2).toString());
+                    textField4.setText(table1.getValueAt(filaSeleccionada, 3).toString());
+                    textField5.setText(table1.getValueAt(filaSeleccionada, 4).toString());
                 }
             }
         });
@@ -95,6 +98,8 @@ public class ClientesGUI {
         textField1.setText("");
         textField2.setText("");
         textField3.setText("");
+        textField4.setText("");
+        textField5.setText("");
     }
 
     ConexionBD conexionBD = new ConexionBD();
@@ -110,7 +115,7 @@ public class ClientesGUI {
 
 
         table1.setModel(model);
-        String[] dato = new String[4];
+        String[] dato = new String[5];
         Connection con = conexionBD.getConnection();
 
         try {
@@ -123,6 +128,7 @@ public class ClientesGUI {
                 dato[1] = rs.getString(2);
                 dato[2] = rs.getString(3);
                 dato[3] = rs.getString(4);
+                dato[4] = rs.getString(5);
 
                 model.addRow(dato);
             }

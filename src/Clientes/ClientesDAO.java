@@ -1,7 +1,7 @@
 package Clientes;
 
-
 import Conexion.ConexionBD;
+import Empleados.Empleados;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -37,7 +37,7 @@ public class ClientesDAO
     }
     public void actualizar(Clientes clientes){
         Connection con = conexionBD.getConnection();
-        String query = "UPDATE clientes set nombre = ?, telefono = ?, direccion = ?, correo = ? WHERE id = ?";
+        String query = "UPDATE clientes SET nombre = ?, telefono = ?, direccion = ?, correo = ? WHERE id_cliente = ?";
 
         try{
                 PreparedStatement pst = con.prepareStatement(query);
@@ -46,6 +46,7 @@ public class ClientesDAO
                 pst.setString(2,clientes.getTelefono());
                 pst.setString(3,clientes.getDireccion());
                 pst.setString(4,clientes.getCorreo());
+                pst.setInt(5, clientes.getId_cliente());
 
 
                 int resultado = pst.executeUpdate();
