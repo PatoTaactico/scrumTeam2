@@ -20,8 +20,6 @@ public class ProveedoresGUI {
     private JTextField textField2;
     private JTextField textField3;
     private JComboBox comboBox1;
-    private JTextField textField4;
-    private JTextField textField5;
     private JButton agregarButton;
     private JButton actualizarButton;
     private JButton eliminarButton;
@@ -39,10 +37,8 @@ public class ProveedoresGUI {
                 String nombre = textField2.getText();
                 String telefono = textField3.getText();
                 String categoria_producto = (String) comboBox1.getSelectedItem();
-                String nombre_producto = textField4.getText();
-                int precio_proveedor = Integer.parseInt(textField5.getText());
 
-                Proveedores proveedores = new Proveedores(0,nombre,telefono,categoria_producto,nombre_producto,precio_proveedor);
+                Proveedores proveedores = new Proveedores(0,nombre,telefono,categoria_producto);
                 proveedoresDAO.agregar(proveedores);
                 obtenerDatos();
                 clear();
@@ -54,11 +50,9 @@ public class ProveedoresGUI {
                 String nombre = textField2.getText();
                 String telefono = textField3.getText();
                 String categoria_producto = (String) comboBox1.getSelectedItem();
-                String nombre_producto = textField4.getText();
-                int precio_proveedor = Integer.parseInt(textField5.getText());
                 int id_proveedor = Integer.parseInt(textField1.getText());
 
-                Proveedores proveedores = new Proveedores(id_proveedor,nombre,telefono,categoria_producto,nombre_producto,precio_proveedor);
+                Proveedores proveedores = new Proveedores(id_proveedor,nombre,telefono,categoria_producto);
                 proveedoresDAO.actualizar(proveedores);
                 obtenerDatos();
                 clear();
@@ -83,8 +77,6 @@ public class ProveedoresGUI {
                     textField2.setText(table1.getValueAt(filaSeleccionada, 1).toString());
                     textField3.setText(table1.getValueAt(filaSeleccionada, 2).toString());
                     comboBox1.setSelectedItem(table1.getValueAt(filaSeleccionada, 3).toString());
-                    textField4.setText(table1.getValueAt(filaSeleccionada, 4).toString());
-                    textField5.setText(table1.getValueAt(filaSeleccionada, 5).toString());
                 }
             }
         });
@@ -94,8 +86,6 @@ public class ProveedoresGUI {
         textField2.setText("");
         textField3.setText("");
         comboBox1.setSelectedIndex(0);
-        textField4.setText("");
-        textField5.setText("");
     }
 
     ConexionBD conexionBD = new ConexionBD();
@@ -106,8 +96,6 @@ public class ProveedoresGUI {
         model.addColumn("Nombre");
         model.addColumn("Telefono");
         model.addColumn("Categoria Producto");
-        model.addColumn("Nombre Producto");
-        model.addColumn("Precio Proveedor");
 
         table1.setModel(model);
         String[] dato = new String[6];
@@ -123,8 +111,6 @@ public class ProveedoresGUI {
                 dato[1] = rs.getString(2);
                 dato[2] = rs.getString(3);
                 dato[3] = rs.getString(4);
-                dato[4] = rs.getString(5);
-                dato[5] = rs.getString(6);
 
                 model.addRow(dato);
             }

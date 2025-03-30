@@ -13,7 +13,7 @@ public class ProveedoresDAO
 
     public void agregar(Proveedores proveedores){
         Connection con = conexionBD.getConnection();
-        String query = "INSERT INTO proveedores (nombre,telefono,categoria_producto,nombre_producto,precio_proveedor) VALUES (?,?,?,?,?)";
+        String query = "INSERT INTO proveedores (nombre,telefono,categoria_producto) VALUES (?,?,?)";
 
         try{
             PreparedStatement pst = con.prepareStatement(query);
@@ -21,8 +21,6 @@ public class ProveedoresDAO
             pst.setString(1,proveedores.getNombre());
             pst.setString(2,proveedores.getTelefono());
             pst.setString(3,proveedores.getCategoria_producto());
-            pst.setString(4,proveedores.getNombre_producto());
-            pst.setInt(5,proveedores.getId_proveedor());
 
             int resultado = pst.executeUpdate();
             if (resultado>0){
@@ -37,16 +35,14 @@ public class ProveedoresDAO
     }
     public void actualizar(Proveedores proveedores){
         Connection con = conexionBD.getConnection();
-        String query = "UPDATE proveedores SET nombre = ?, telefono = ?, categoria_producto = ?, nombre_producto, precio_proveedor = ? = ? WHERE id_proveedor = ?";
+        String query = "UPDATE proveedores SET nombre = ?, telefono = ?, categoria_producto = ? WHERE id_proveedor = ?";
 
         try{
             PreparedStatement pst = con.prepareStatement(query);
 
             pst.setString(1,proveedores.getNombre());
-            pst.setString(1,proveedores.getTelefono());
-            pst.setString(1,proveedores.getCategoria_producto());
-            pst.setString(2,proveedores.getNombre_producto());
-            pst.setInt(3,proveedores.getPrecio_proveedor());
+            pst.setString(2,proveedores.getTelefono());
+            pst.setString(3,proveedores.getCategoria_producto());
             pst.setInt(4,proveedores.getId_proveedor());
 
             int resultado = pst.executeUpdate();
