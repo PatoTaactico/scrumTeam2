@@ -68,7 +68,7 @@ public class EmpleadosDAO
             if (resultado>0){
                 JOptionPane.showMessageDialog(null,"Empleado despedido exitosamente");
             } else {
-                JOptionPane.showMessageDialog(null,"Eror al despedir el empleado");
+                JOptionPane.showMessageDialog(null,"Error al despedir el empleado");
             }
         }
         catch (SQLException e){

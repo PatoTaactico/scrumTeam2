@@ -62,6 +62,7 @@ public class EmpleadosGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id_empleado = Integer.parseInt(textField1.getText());
+
                 empleadosDAO.eliminar(id_empleado);
                 obtenerDatos();
                 clear();
@@ -96,7 +97,7 @@ public class EmpleadosGUI {
         model.addColumn("Cargo");
         model.addColumn("Salario");
 
-        table1.setModel(model);
+        table1.setModel(model);  // Asegúrate de asignar el modelo antes de llenar la tabla
         String[] dato = new String[4];
         Connection con = conexionBD.getConnection();
 

@@ -66,5 +66,3 @@ public class Proveedores {
         this.precio_proveedor = precio_proveedor;
     }
 }
-
-//1
