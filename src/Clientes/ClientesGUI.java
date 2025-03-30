@@ -1,7 +1,6 @@
 package Clientes;
 
 import Conexion.ConexionBD;
-import Empleados.Empleados;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -112,7 +111,6 @@ public class ClientesGUI {
         model.addColumn("Telefono");
         model.addColumn("Direccion");
         model.addColumn("Correo");
-
 
         table1.setModel(model);
         String[] dato = new String[5];

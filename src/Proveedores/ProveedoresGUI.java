@@ -128,3 +128,4 @@ public class ProveedoresGUI {
         frame.setResizable(false);
     }
 }
+
