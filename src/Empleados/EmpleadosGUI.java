@@ -1,6 +1,7 @@
 package Empleados;
 
 import Conexion.ConexionBD;
+import MenuPrincipal.MenuPrincipalGUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -23,6 +24,7 @@ public class EmpleadosGUI {
     private JButton consultarButton;
     private JButton actualizarButton;
     private JButton eliminarButton;
+    private JButton volverButton;
     int filas = 0;
 
     EmpleadosDAO empleadosDAO = new EmpleadosDAO();
@@ -78,6 +80,14 @@ public class EmpleadosGUI {
                     comboBox1.setSelectedItem(table1.getValueAt(filaSeleccionada, 2).toString());
                     textField3.setText(table1.getValueAt(filaSeleccionada, 3).toString());
                 }
+            }
+        });
+        volverButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(volverButton);
+                jFrame.dispose();
+                MenuPrincipalGUI.main(null);
             }
         });
     }
