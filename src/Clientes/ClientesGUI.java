@@ -15,8 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ClientesGUI
-{
+public class ClientesGUI {
     private JTextField textField1;
     private JTextField textField2;
     private JTextField textField3;

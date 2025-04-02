@@ -1,4 +1,4 @@
-package Empleados;
+package Proveedores;
 
 import Conexion.ConexionBD;
 
@@ -13,60 +13,70 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class EmpleadosGUI {
+public class ProveedoresGUI {
     private JPanel main;
     private JTable table1;
     private JTextField textField1;
     private JTextField textField2;
-    private JComboBox comboBox1;
+    private JComboBox<String> comboBox1;
     private JTextField textField3;
-    private JButton consultarButton;
+    private JTextField textField4;
+    private JTextField textField5;
+    private JButton agregarButton;
     private JButton actualizarButton;
     private JButton eliminarButton;
-    int filas = 0;
 
-    EmpleadosDAO empleadosDAO = new EmpleadosDAO();
+    ProveedoresDAO proveedoresDAO = new ProveedoresDAO();
 
-    public EmpleadosGUI() {
+    public ProveedoresGUI() {
         textField1.setEnabled(false);
         obtenerDatos();
 
-        consultarButton.addActionListener(new ActionListener() {
+
+        agregarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nombre = textField2.getText();
-                String cargo = (String) comboBox1.getSelectedItem();
-                int salario = Integer.parseInt(textField3.getText());
+                String telefono = textField3.getText();
+                String categoria_producto = (String) comboBox1.getSelectedItem();
+                String nombre_producto = textField4.getText();
+                int precio_proveedor = Integer.parseInt(textField5.getText());
 
-                Empleados empleados = new Empleados(0, nombre, cargo, salario);
-                empleadosDAO.agregar(empleados);
+
+                Proveedores proveedores = new Proveedores(0, nombre, telefono, categoria_producto, nombre_producto, precio_proveedor);
+                proveedoresDAO.agregar(proveedores);
                 obtenerDatos();
                 clear();
             }
         });
+
         actualizarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nombre = textField2.getText();
-                String cargo = (String) comboBox1.getSelectedItem();
-                int salario = Integer.parseInt(textField3.getText());
-                int id_empleado = Integer.parseInt(textField1.getText());
+                String telefono = textField3.getText();
+                String categoria_producto = (String) comboBox1.getSelectedItem();
+                String nombre_producto = textField4.getText();
+                int precio_proveedor = Integer.parseInt(textField5.getText());
+                int id_proveedor = Integer.parseInt(textField1.getText());
 
-                Empleados empleados = new Empleados(id_empleado, nombre, cargo, salario);
-                empleadosDAO.actualizar(empleados);
+                Proveedores proveedores = new Proveedores(id_proveedor, nombre, telefono, categoria_producto, nombre_producto, precio_proveedor);
+                proveedoresDAO.actualizar(proveedores);
                 obtenerDatos();
                 clear();
             }
         });
+
         eliminarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int id_empleado = Integer.parseInt(textField1.getText());
-                empleadosDAO.eliminar(id_empleado);
+                int id_proveedor = Integer.parseInt(textField1.getText());
+                proveedoresDAO.eliminar(id_proveedor);
                 obtenerDatos();
                 clear();
             }
         });
+
         table1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -76,50 +86,56 @@ public class EmpleadosGUI {
                     textField2.setText(table1.getValueAt(filaSeleccionada, 1).toString());
                     comboBox1.setSelectedItem(table1.getValueAt(filaSeleccionada, 2).toString());
                     textField3.setText(table1.getValueAt(filaSeleccionada, 3).toString());
+                    textField4.setText(table1.getValueAt(filaSeleccionada, 4).toString());
+                    textField5.setText(table1.getValueAt(filaSeleccionada, 5).toString());
                 }
             }
         });
     }
+
     public void clear() {
         textField1.setText("");
         textField2.setText("");
         comboBox1.setSelectedIndex(0);
         textField3.setText("");
+        textField4.setText("");
+        textField5.setText("");
     }
 
     ConexionBD conexionBD = new ConexionBD();
 
     public void obtenerDatos() {
         DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID Empleado");
+        model.addColumn("ID Proveedor");
         model.addColumn("Nombre");
-        model.addColumn("Cargo");
-        model.addColumn("Salario");
+        model.addColumn("Telefono");
+        model.addColumn("Categoria_Producto");
+        model.addColumn("Nombre_Producto");
+        model.addColumn("Precio_Proveedor");
 
         table1.setModel(model);
-        String[] dato = new String[4];
+        String[] dato = new String[6];
         Connection con = conexionBD.getConnection();
 
         try {
             Statement stmt = con.createStatement();
-            String query = "SELECT * FROM empleados";
+            String query = "SELECT * FROM proveedores";
             ResultSet rs = stmt.executeQuery(query);
 
             while (rs.next()) {
-                dato[0] = rs.getString(1);
-                dato[1] = rs.getString(2);
-                dato[2] = rs.getString(3);
-                dato[3] = rs.getString(4);
-
+                for (int i = 0; i < 6; i++) {
+                    dato[i] = rs.getString(i + 1);
+                }
                 model.addRow(dato);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Empleados");
-        frame.setContentPane(new EmpleadosGUI().main);
+        JFrame frame = new JFrame("Proveedores");
+        frame.setContentPane(new ProveedoresGUI().main);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -127,3 +143,5 @@ public class EmpleadosGUI {
         frame.setResizable(false);
     }
 }
+
+//1
