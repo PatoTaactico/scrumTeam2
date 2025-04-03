@@ -4,7 +4,9 @@ import Conexion.ConexionBD;
 import MenuPrincipal.MenuPrincipalGUI;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -15,107 +17,92 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ClientesGUI {
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JTextField textField4;
-    private JTextField textField5;
-    private JButton crearButton;
-    private JButton actualizarButton;
-    private JButton eliminarButton;
+    private JTextField textField1, textField2, textField3, textField4, textField5;
+    private JButton crearButton, actualizarButton, eliminarButton, volverButton;
     private JPanel main;
     private JTable table1;
-    private JButton volverButton;
-    int filas = 0;
-
     ClientesDAO clientesDAO = new ClientesDAO();
 
-    public ClientesGUI()
-    {
+    public ClientesGUI() {
+        main = new JPanel(new BorderLayout(10, 10));
+        main.setBackground(new Color(230, 230, 250));
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        topPanel.setBackground(new Color(200, 200, 255));
+
+        JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        formPanel.setBorder(BorderFactory.createTitledBorder("Datos del Cliente"));
+        formPanel.setBackground(new Color(220, 220, 250));
+
+        formPanel.add(new JLabel("ID:"));
+        textField1 = new JTextField();
         textField1.setEnabled(false);
+        formPanel.add(textField1);
+
+        formPanel.add(new JLabel("Nombre:"));
+        textField2 = new JTextField();
+        formPanel.add(textField2);
+
+        formPanel.add(new JLabel("Teléfono:"));
+        textField3 = new JTextField();
+        formPanel.add(textField3);
+
+        formPanel.add(new JLabel("Dirección:"));
+        textField4 = new JTextField();
+        formPanel.add(textField4);
+
+        formPanel.add(new JLabel("Correo:"));
+        textField5 = new JTextField();
+        formPanel.add(textField5);
+
+        topPanel.add(formPanel, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        buttonPanel.setBackground(new Color(200, 200, 255));
+
+        crearButton = createStyledButton("Crear", new Color(76, 175, 80));
+        actualizarButton = createStyledButton("Actualizar", new Color(33, 150, 243));
+        eliminarButton = createStyledButton("Eliminar", new Color(244, 67, 54));
+        volverButton = createStyledButton("Volver", new Color(255, 152, 0));
+
+        buttonPanel.add(crearButton);
+        buttonPanel.add(actualizarButton);
+        buttonPanel.add(eliminarButton);
+        buttonPanel.add(volverButton);
+
+        topPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        table1 = new JTable();
+        table1.setBackground(new Color(255, 250, 205));
+        JScrollPane scrollPane = new JScrollPane(table1);
+
+        main.add(topPanel, BorderLayout.NORTH);
+        main.add(scrollPane, BorderLayout.CENTER);
+
         obtenerDatos();
-
-        crearButton.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                String nombre = textField2.getText();
-                String telefono = textField3.getText();
-                String direccion = textField4.getText();
-                String correo = textField5.getText();
-
-                Clientes clientes = new Clientes(0, nombre, telefono, direccion, correo);
-                clientesDAO.agregar(clientes);
-                obtenerDatos();
-                clear();
-            }
-        });
-        actualizarButton.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nombre = textField2.getText();
-                String telefono = textField3.getText();
-                String direccion = textField4.getText();
-                String correo = textField5.getText();
-                int id_cliente = Integer.parseInt(textField1.getText());
-
-                Clientes clientes = new Clientes(id_cliente, nombre, telefono, direccion, correo);
-                clientesDAO.actualizar(clientes);
-                obtenerDatos();
-                clear();
-            }
-        });
-        eliminarButton.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int id_cliente = Integer.parseInt(textField1.getText());
-
-                clientesDAO.eliminar(id_cliente);
-                obtenerDatos();
-                clear();
-            }
-        });
-        table1.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                int filaSeleccionada = table1.getSelectedRow();
-                if (filaSeleccionada != -1)
-                {
-                    textField1.setText(table1.getValueAt(filaSeleccionada, 0).toString());
-                    textField2.setText(table1.getValueAt(filaSeleccionada, 1).toString());
-                    textField3.setText(table1.getValueAt(filaSeleccionada, 2).toString());
-                    textField4.setText(table1.getValueAt(filaSeleccionada, 3).toString());
-                    textField5.setText(table1.getValueAt(filaSeleccionada, 4).toString());
-                }
-            }
-        });
-
-        volverButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(volverButton);
-                jFrame.dispose();
-                MenuPrincipalGUI.main(null);
-            }
-        });
-    }
-    public void clear()
-    {
-        textField1.setText("");
-        textField2.setText("");
-        textField3.setText("");
-        textField4.setText("");
-        textField5.setText("");
+        agregarEventos();
     }
 
-    ConexionBD conexionBD = new ConexionBD();
+    private JButton createStyledButton(String text, Color color) {
+        JButton button = new JButton(text);
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1, true));
+        button.setPreferredSize(new Dimension(90, 35));
+        return button;
+    }
 
-    public void obtenerDatos()
-    {
+    private void agregarEventos() {
+        volverButton.addActionListener(e -> {
+            JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(volverButton);
+            jFrame.dispose();
+            MenuPrincipalGUI.main(null);
+        });
+    }
+
+    public void obtenerDatos() {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID Cliente");
         model.addColumn("Nombre");
@@ -124,35 +111,32 @@ public class ClientesGUI {
         model.addColumn("Correo");
 
         table1.setModel(model);
-        String[] dato = new String[5];
-        Connection con = conexionBD.getConnection();
+        Connection con = new ConexionBD().getConnection();
 
         try {
             Statement stmt = con.createStatement();
-            String query = "SELECT * FROM clientes";
-            ResultSet rs = stmt.executeQuery(query);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM clientes");
 
             while (rs.next()) {
-                dato[0] = rs.getString(1);
-                dato[1] = rs.getString(2);
-                dato[2] = rs.getString(3);
-                dato[3] = rs.getString(4);
-                dato[4] = rs.getString(5);
-
-                model.addRow(dato);
+                model.addRow(new Object[]{
+                        rs.getString(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5)
+                });
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public static void main(String[] args)
-    {
+
+    public static void main(String[] args) {
         JFrame frame = new JFrame("Clientes");
         frame.setContentPane(new ClientesGUI().main);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
         frame.setSize(800, 700);
+        frame.setVisible(true);
         frame.setResizable(false);
     }
 }
