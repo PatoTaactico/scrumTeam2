@@ -111,11 +111,11 @@ public class Inventario_productosGUI {
 
             for (Inventario_productos p : productos) {
                 model.addRow(new Object[]{
-                        p.getId(),
-                        p.getNombre(),
+                        p.getId_producto(),
+                        p.getNombre_producto(),
                         p.getCategoria(),
-                        p.getCantidad(),
-                        p.getPrecio()
+                        p.getCantidad_stock(),
+                        p.getPrecio_producto()
                 });
             }
             table1.setModel(model);
