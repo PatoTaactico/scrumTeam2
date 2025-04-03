@@ -14,6 +14,9 @@ public class Inventario_productosGUI {
     private JTextField textField3;
     private JTextField textField4;
     private JButton volverButton;
+    private JButton agregarButton;
+    private JButton actualizarButton;
+    private JButton eliminarButton;
 
     public Inventario_productosGUI() {
         volverButton.addActionListener(new ActionListener() {
