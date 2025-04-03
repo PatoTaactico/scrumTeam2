@@ -172,4 +172,5 @@ public class Inventario_productosGUI {
         frame.setSize(600, 400);
         frame.setVisible(true);
     }
+
 }

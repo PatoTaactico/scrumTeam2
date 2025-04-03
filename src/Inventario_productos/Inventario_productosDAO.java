@@ -67,3 +67,4 @@ public class Inventario_productosDAO {
         pstmt.close();
     }
 }
+
