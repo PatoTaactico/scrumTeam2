@@ -82,12 +82,12 @@ public class Inventario_productosGUI {
                 return;
             }
 
-            String nombre = textField1.getText();
+            String nombre_producto = textField1.getText();
             String categoria = textField2.getText();
-            int cantidad = Integer.parseInt(textField3.getText());
-            int precio = Integer.parseInt(textField4.getText());
+            int cantidad_stock = Integer.parseInt(textField3.getText());
+            int precio_producto = Integer.parseInt(textField4.getText());
 
-            Inventario_productos producto = new Inventario_productos(0, nombre, categoria, precio, cantidad, 0);
+            Inventario_productos producto = new Inventario_productos(0, nombre_producto, categoria, precio_producto, cantidad_stock, 0);
             productosDAO.agregarProducto(producto);
             cargarProductos();
 
@@ -129,13 +129,13 @@ public class Inventario_productosGUI {
         if (selectedRow != -1) {
             try {
                 int id = (int) table1.getValueAt(selectedRow, 0);
-                String nombre = textField1.getText();
+                String nombre_producto = textField1.getText();
                 String categoria = textField2.getText();
-                int cantidad = Integer.parseInt(textField3.getText());
-                int precio = Integer.parseInt(textField4.getText());
+                int cantidad_stock = Integer.parseInt(textField3.getText());
+                int precio_producto = Integer.parseInt(textField4.getText());
 
 
-                Inventario_productos producto = new Inventario_productos(0, nombre, categoria, precio, cantidad, 0);
+                Inventario_productos producto = new Inventario_productos(0,  nombre_producto, categoria, precio_producto, cantidad_stock,0);
                 productosDAO.actualizarProducto(producto);
                 cargarProductos();
                 JOptionPane.showMessageDialog(null, "Producto actualizado correctamente.");
