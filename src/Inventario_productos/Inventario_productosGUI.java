@@ -103,11 +103,11 @@ public class Inventario_productosGUI {
         try {
             List<Inventario_productos> productos = productosDAO.obtenerProductos();
             DefaultTableModel model = new DefaultTableModel();
-            model.addColumn("ID");
-            model.addColumn("Nombre");
+            model.addColumn("id_producto");
+            model.addColumn("nombre_producto");
             model.addColumn("Categoría");
-            model.addColumn("Cantidad");
-            model.addColumn("Precio");
+            model.addColumn("cantidad_stock");
+            model.addColumn("precio_producto");
 
             for (Inventario_productos p : productos) {
                 model.addRow(new Object[]{
