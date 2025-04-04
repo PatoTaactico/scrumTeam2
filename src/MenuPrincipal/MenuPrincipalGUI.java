@@ -26,7 +26,7 @@ public class MenuPrincipalGUI {
         gbc.gridx = 0;
         gbc.gridy = 1; // Posiciona los botones en el centro vertical
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(150, 0, 0, 0); // Ajuste para bajar los botones
+        gbc.insets = new Insets(600, 0, 0, 0); // Ajuste para bajar los botones
 
         // Panel para los botones
         JPanel botonesPanel = new JPanel(new GridLayout(1, 6, 20, 10));
@@ -54,8 +54,8 @@ public class MenuPrincipalGUI {
 
     private JButton crearBoton(String texto) {
         JButton boton = new JButton(texto);
-        boton.setFont(new Font("Arial", Font.BOLD, 20));
-        boton.setBackground(new Color(105, 105, 105));
+        boton.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        boton.setBackground(new Color(133, 102, 77));
         boton.setForeground(Color.WHITE);
         boton.setFocusPainted(false);
         boton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
@@ -111,7 +111,7 @@ public class MenuPrincipalGUI {
         private Image imagenFondo;
 
         public FondoPanel() {
-            URL imagenURL = getClass().getClassLoader().getResource("imagenes/fondo1.png");
+            URL imagenURL = getClass().getClassLoader().getResource("imagenes/fondo2.png");
             if (imagenURL != null) {
                 this.imagenFondo = new ImageIcon(imagenURL).getImage();
             }

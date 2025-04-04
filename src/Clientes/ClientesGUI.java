@@ -3,6 +3,7 @@ package Clientes;
 import Conexion.ConexionBD;
 import MenuPrincipal.MenuPrincipalGUI;
 
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -16,7 +17,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ClientesGUI {
+
+public class ClientesGUI extends JFrame{
     private JTextField textField1, textField2, textField3, textField4, textField5;
     private JButton crearButton, actualizarButton, eliminarButton, volverButton;
     private JPanel main;
@@ -24,6 +26,7 @@ public class ClientesGUI {
     ClientesDAO clientesDAO = new ClientesDAO();
 
     public ClientesGUI() {
+
         main = new JPanel(new BorderLayout(10, 10));
         main.setBackground(new Color(230, 230, 250));
 
