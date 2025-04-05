@@ -9,10 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class ProveedoresGUI {
     private JTextField textField1, textField2, textField3;
@@ -48,7 +45,7 @@ public class ProveedoresGUI {
         formPanel.add(textField3);
 
         formPanel.add(new JLabel("Categoría:"));
-        comboBox1 = new JComboBox<>(new String[]{"Materiales", "Herramientas", "Electricidad", "Construcción"});
+        comboBox1 = new JComboBox<>(new String[]{"herramientas", "electricidad", "materiales", "construcción"});
         formPanel.add(comboBox1);
 
         topPanel.add(formPanel, BorderLayout.CENTER);
@@ -95,6 +92,60 @@ public class ProveedoresGUI {
             jFrame.dispose();
             MenuPrincipalGUI.main(null);
         });
+
+        agregarButton.addActionListener(e -> {
+            String nombre = textField2.getText();
+            String telefono = textField3.getText();
+            String categoria = (String) comboBox1.getSelectedItem();
+
+            proveedoresDAO.agregarProveedor(nombre, telefono, categoria);
+            JOptionPane.showMessageDialog(null, "Proveedor agregado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            limpiarCampos();
+            obtenerDatos();
+        });
+
+        actualizarButton.addActionListener(e -> {
+            if (textField1.getText().isEmpty()) return;
+
+            int id = Integer.parseInt(textField1.getText());
+            String nombre = textField2.getText();
+            String telefono = textField3.getText();
+            String categoria = (String) comboBox1.getSelectedItem();
+
+            proveedoresDAO.actualizarProveedor(id, nombre, telefono, categoria);
+            JOptionPane.showMessageDialog(null, "Proveedor actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            limpiarCampos();
+            obtenerDatos();
+        });
+
+        eliminarButton.addActionListener(e -> {
+            if (textField1.getText().isEmpty()) return;
+
+            int id = Integer.parseInt(textField1.getText());
+            proveedoresDAO.eliminarProveedor(id);
+            JOptionPane.showMessageDialog(null, "Proveedor eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            limpiarCampos();
+            obtenerDatos();
+        });
+
+
+        table1.getSelectionModel().addListSelectionListener(event -> {
+            int fila = table1.getSelectedRow();
+            if (fila >= 0) {
+                textField1.setText(table1.getValueAt(fila, 0).toString());
+                textField2.setText(table1.getValueAt(fila, 1).toString());
+                textField3.setText(table1.getValueAt(fila, 2).toString());
+                comboBox1.setSelectedItem(table1.getValueAt(fila, 3).toString());
+            }
+        });
+    }
+
+    private void limpiarCampos() {
+        textField1.setText("");
+        textField2.setText("");
+        textField3.setText("");
+        comboBox1.setSelectedIndex(0);
+        table1.clearSelection();
     }
 
     public void obtenerDatos() {
@@ -113,10 +164,10 @@ public class ProveedoresGUI {
 
             while (rs.next()) {
                 model.addRow(new Object[]{
-                        rs.getString(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4)
+                        rs.getInt("id_proveedor"),
+                        rs.getString("nombre"),
+                        rs.getString("telefono"),
+                        rs.getString("categoria_producto")
                 });
             }
         } catch (SQLException e) {

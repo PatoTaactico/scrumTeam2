@@ -2,78 +2,53 @@ package Proveedores;
 
 import Conexion.ConexionBD;
 
-import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class ProveedoresDAO
-{
-    private ConexionBD conexionBD = new ConexionBD();
+public class ProveedoresDAO {
 
-    public void agregar(Proveedores proveedores){
-        Connection con = conexionBD.getConnection();
-        String query = "INSERT INTO proveedores (nombre,telefono,categoria_producto) VALUES (?,?,?)";
+    public void agregarProveedor(String nombre, String telefono, String categoria) {
+        String sql = "INSERT INTO proveedores (nombre, telefono, categoria_producto) VALUES (?, ?, ?)";
+        try (Connection con = new ConexionBD().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-        try{
-            PreparedStatement pst = con.prepareStatement(query);
+            ps.setString(1, nombre);
+            ps.setString(2, telefono);
+            ps.setString(3, categoria);
+            ps.executeUpdate();
 
-            pst.setString(1,proveedores.getNombre());
-            pst.setString(2,proveedores.getTelefono());
-            pst.setString(3,proveedores.getCategoria_producto());
-
-            int resultado = pst.executeUpdate();
-            if (resultado>0){
-                JOptionPane.showMessageDialog(null,"Se ha agregado al proveedor exitosamente");
-            } else {
-                JOptionPane.showMessageDialog(null,"Error al agregar el proveedor");
-            }
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public void actualizar(Proveedores proveedores){
-        Connection con = conexionBD.getConnection();
-        String query = "UPDATE proveedores SET nombre = ?, telefono = ?, categoria_producto = ? WHERE id_proveedor = ?";
 
-        try{
-            PreparedStatement pst = con.prepareStatement(query);
+    public void actualizarProveedor(int id, String nombre, String telefono, String categoria) {
+        String sql = "UPDATE proveedores SET nombre = ?, telefono = ?, categoria_producto = ? WHERE id_proveedor = ?";
+        try (Connection con = new ConexionBD().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            pst.setString(1,proveedores.getNombre());
-            pst.setString(2,proveedores.getTelefono());
-            pst.setString(3,proveedores.getCategoria_producto());
-            pst.setInt(4,proveedores.getId_proveedor());
+            ps.setString(1, nombre);
+            ps.setString(2, telefono);
+            ps.setString(3, categoria);
+            ps.setInt(4, id);
+            ps.executeUpdate();
 
-            int resultado = pst.executeUpdate();
-            if (resultado>0){
-                JOptionPane.showMessageDialog(null,"Se ha actualizado el estado del poveedor");
-            } else {
-                JOptionPane.showMessageDialog(null,"Error al actualizar el estado del proveedor");
-            }
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public void eliminar(int id_proveedor){
-        Connection con = conexionBD.getConnection();
-        String query = "DELETE FROM proveedores WHERE id_proveedor = ?";
 
-        try{
-            PreparedStatement pst = con.prepareStatement(query);
-            pst.setInt(1,id_proveedor);
+    public void eliminarProveedor(int id) {
+        String sql = "DELETE FROM proveedores WHERE id_proveedor = ?";
+        try (Connection con = new ConexionBD().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            int resultado = pst.executeUpdate();
-            if (resultado>0){
-                JOptionPane.showMessageDialog(null,"Provedor eliminado");
-            } else {
-                JOptionPane.showMessageDialog(null,"Error al eliminar el empleado");
-            }
-        }
-        catch (SQLException e){
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 }
-

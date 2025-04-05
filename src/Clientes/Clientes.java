@@ -1,12 +1,17 @@
 package Clientes;
 
-public class Clientes{
-     int id_cliente;
-     String nombre;
-     String telefono;
-     String direccion;
-     String correo;
+public class Clientes {
+    int id_cliente;
+    String nombre;
+    String telefono;
+    String direccion;
+    String correo;
 
+    // 🔹 Constructor vacío (NECESARIO para usar setters)
+    public Clientes() {
+    }
+
+    // 🔹 Constructor con todos los campos
     public Clientes(int id_cliente, String nombre, String telefono, String direccion, String correo) {
         this.id_cliente = id_cliente;
         this.nombre = nombre;
@@ -55,4 +60,3 @@ public class Clientes{
         this.correo = correo;
     }
 }
-

@@ -7,20 +7,19 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class EmpleadosGUI {
-    private JTextField textField1, textField2, textField3;
-    private JComboBox<String> comboBox1;
-    private JButton consultarButton, actualizarButton, eliminarButton, volverButton;
-    private JPanel main;
+    private JTextField textField1, textField2, textField3, buscarField;
+    private JComboBox<String> comboBox1, comboBusqueda;
+    private JButton agregarButton, consultarButton, actualizarButton, eliminarButton, volverButton;
+    private JPanel main, panelBusqueda;
     private JTable table1;
     EmpleadosDAO empleadosDAO = new EmpleadosDAO();
 
@@ -53,16 +52,36 @@ public class EmpleadosGUI {
         textField3 = new JTextField();
         formPanel.add(textField3);
 
-        topPanel.add(formPanel, BorderLayout.CENTER);
+        panelBusqueda = new JPanel(new GridLayout(2, 2, 10, 10));
+        panelBusqueda.setBorder(BorderFactory.createTitledBorder("Buscar Empleados"));
+        panelBusqueda.setBackground(new Color(220, 220, 250));
+        panelBusqueda.setVisible(false);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 4, 15, 10));
+        panelBusqueda.add(new JLabel("Buscar por:"));
+        comboBusqueda = new JComboBox<>(new String[]{"ID", "Nombre", "Cargo", "Todos"});
+        panelBusqueda.add(comboBusqueda);
+
+        panelBusqueda.add(new JLabel("Valor a buscar:"));
+        buscarField = new JTextField();
+        panelBusqueda.add(buscarField);
+
+        JPanel formContainer = new JPanel(new BorderLayout(10, 10));
+        formContainer.setBackground(new Color(200, 200, 255));
+        formContainer.add(formPanel, BorderLayout.NORTH);
+        formContainer.add(panelBusqueda, BorderLayout.CENTER);
+
+        topPanel.add(formContainer, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 5, 15, 10));
         buttonPanel.setBackground(new Color(200, 200, 255));
 
+        agregarButton = createStyledButton("Agregar", new Color(0, 150, 136));
         consultarButton = createStyledButton("Consultar", new Color(76, 175, 80));
         actualizarButton = createStyledButton("Actualizar", new Color(33, 150, 243));
         eliminarButton = createStyledButton("Eliminar", new Color(244, 67, 54));
         volverButton = createStyledButton("Volver", new Color(255, 152, 0));
 
+        buttonPanel.add(agregarButton);
         buttonPanel.add(consultarButton);
         buttonPanel.add(actualizarButton);
         buttonPanel.add(eliminarButton);
@@ -92,35 +111,106 @@ public class EmpleadosGUI {
     }
 
     private void agregarEventos() {
-        consultarButton.addActionListener(e -> {
-            String nombre = textField2.getText();
+        agregarButton.addActionListener(e -> {
+            String nombre = textField2.getText().trim();
             String cargo = (String) comboBox1.getSelectedItem();
-            int salario = Integer.parseInt(textField3.getText());
+            String salarioStr = textField3.getText().trim();
 
-            Empleados empleados = new Empleados(0, nombre, cargo, salario);
-            empleadosDAO.agregar(empleados);
-            obtenerDatos();
-            clear();
+            if (nombre.isEmpty() || salarioStr.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.");
+                return;
+            }
+
+            try {
+                int salario = Integer.parseInt(salarioStr);
+                Empleados empleado = new Empleados(0, nombre, cargo, salario);
+                empleadosDAO.agregar(empleado);
+                obtenerDatos();
+                clear();
+                JOptionPane.showMessageDialog(null, "Empleado agregado exitosamente.");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "El salario debe ser un número.");
+            }
+        });
+
+
+        consultarButton.addActionListener(e -> {
+            if (!panelBusqueda.isVisible()) {
+                panelBusqueda.setVisible(true);
+                main.revalidate();
+                main.repaint();
+                return;
+            }
+
+            String tipoBusqueda = (String) comboBusqueda.getSelectedItem();
+            String valor = buscarField.getText().trim();
+
+            if (tipoBusqueda.equals("Todos")) {
+                obtenerDatos();
+                panelBusqueda.setVisible(false);
+                return;
+            }
+
+            if (valor.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Ingrese un valor para buscar.");
+                return;
+            }
+
+            if (tipoBusqueda.equals("ID")) {
+                try {
+                    int id = Integer.parseInt(valor);
+                    Empleados empleado = empleadosDAO.consultarPorId(id);
+                    if (empleado != null) {
+                        llenarTabla(List.of(empleado));
+                        panelBusqueda.setVisible(false);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Empleado no encontrado.");
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "El ID debe ser un número.");
+                }
+            } else {
+                String campo = tipoBusqueda.equals("Nombre") ? "nombre" : "cargo";
+                List<Empleados> lista = empleadosDAO.buscarPorCampo(campo, valor);
+                if (!lista.isEmpty()) {
+                    llenarTabla(lista);
+                    panelBusqueda.setVisible(false);
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se encontraron resultados.");
+                }
+            }
         });
 
         actualizarButton.addActionListener(e -> {
-            String nombre = textField2.getText();
-            String cargo = (String) comboBox1.getSelectedItem();
-            int salario = Integer.parseInt(textField3.getText());
-            int id_empleado = Integer.parseInt(textField1.getText());
+            try {
+                String nombre = textField2.getText();
+                String cargo = (String) comboBox1.getSelectedItem();
+                int salario = Integer.parseInt(textField3.getText());
+                int id_empleado = Integer.parseInt(textField1.getText());
 
-            Empleados empleados = new Empleados(id_empleado, nombre, cargo, salario);
-            empleadosDAO.actualizar(empleados);
-            obtenerDatos();
-            clear();
+                Empleados empleados = new Empleados(id_empleado, nombre, cargo, salario);
+                empleadosDAO.actualizar(empleados);
+                obtenerDatos();
+                clear();
+                JOptionPane.showMessageDialog(null, "Empleado actualizado exitosamente.");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Verifique que el salario y el ID sean números.");
+            }
         });
+
 
         eliminarButton.addActionListener(e -> {
-            int id_empleado = Integer.parseInt(textField1.getText());
-            empleadosDAO.eliminar(id_empleado);
-            obtenerDatos();
-            clear();
+            try {
+                int id_empleado = Integer.parseInt(textField1.getText());
+                empleadosDAO.eliminar(id_empleado);
+                obtenerDatos();
+                clear();
+                JOptionPane.showMessageDialog(null, "Empleado eliminado exitosamente.");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Seleccione un empleado válido para eliminar.");
+            }
         });
+
 
         table1.addMouseListener(new MouseAdapter() {
             @Override
@@ -147,33 +237,31 @@ public class EmpleadosGUI {
         textField2.setText("");
         comboBox1.setSelectedIndex(0);
         textField3.setText("");
+        buscarField.setText("");
     }
 
     public void obtenerDatos() {
+        List<Empleados> lista = empleadosDAO.buscarPorCampo("nombre", "");
+        llenarTabla(lista);
+    }
+
+    private void llenarTabla(List<Empleados> lista) {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID Empleado");
         model.addColumn("Nombre");
         model.addColumn("Cargo");
         model.addColumn("Salario");
 
-        table1.setModel(model);
-        Connection con = new ConexionBD().getConnection();
-
-        try {
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM empleados");
-
-            while (rs.next()) {
-                model.addRow(new Object[]{
-                        rs.getString(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4)
-                });
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        for (Empleados emp : lista) {
+            model.addRow(new Object[]{
+                    emp.getId_empleado(),
+                    emp.getNombre(),
+                    emp.getCargo(),
+                    emp.getSalario()
+            });
         }
+
+        table1.setModel(model);
     }
 
     public static void main(String[] args) {
