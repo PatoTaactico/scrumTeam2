@@ -57,6 +57,21 @@ public class Inventario_productos {
         this.cantidad_stock = cantidad_stock;
     }
 
+    public int getPrecio_producto() {
+        return precio_producto;
+    }
+
+    public void setPrecio_producto(int precio_producto) {
+        this.precio_producto = precio_producto;
+    }
+
+    public Integer getId_Proveedor_asociado() {
+        return id_Proveedor_asociado;
+    }
+
+    public void setId_Proveedor_asociado(Integer id_proveedor_asociado) {
+        this.id_Proveedor_asociado = id_proveedor_asociado;
+
     public int getId_Proveedor_asociado() {
         return id_Proveedor_asociado;
     }
@@ -65,3 +80,4 @@ public class Inventario_productos {
         this.id_Proveedor_asociado = id_Proveedor_asociado;
     }
 }
+

@@ -3,94 +3,82 @@ package Inventario_productos;
 import MenuPrincipal.MenuPrincipalGUI;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.List;
 
 public class Inventario_productosGUI {
     private JPanel main;
     private JTable table1;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JTextField textField4;
-    private JButton volverButton;
+    private JTextField textField1; // id_producto
+    private JTextField textField2; // nombre
+    private JComboBox<String> comboBox1; // categoría
+    private JTextField textField3; // cantidad
+    private JTextField textField4; // precio
+    private JTextField textField5; // id_proveedor_asociado
+    private JButton agregarButton;
     private JButton actualizarButton;
     private JButton eliminarButton;
-    private JButton crearButton;
+    private JButton volverButton;
+
     private Inventario_productosDAO productosDAO;
 
     public Inventario_productosGUI() {
-        Connection conexion = conectarBaseDatos();
-        if (conexion != null) {
-            productosDAO = new Inventario_productosDAO(conexion);
-            cargarProductos();
-        }
+        productosDAO = new Inventario_productosDAO();
 
-        volverButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(volverButton);
-                jFrame.dispose();
-                MenuPrincipalGUI.main(null);
-            }
+        textField1.setEditable(false);
+        textField5.setEditable(false);
+
+        cargarCategorias();
+        cargarProductos();
+
+        agregarButton.addActionListener(e -> agregarProducto());
+        actualizarButton.addActionListener(e -> actualizarProducto());
+        eliminarButton.addActionListener(e -> eliminarProducto());
+
+        volverButton.addActionListener(e -> {
+            JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(volverButton);
+            jFrame.dispose();
+            MenuPrincipalGUI.main(null);
         });
 
-        crearButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                agregarProducto();
-            }
-        });
-
-        actualizarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                actualizarProducto();
-            }
-        });
-
-        eliminarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                eliminarProducto();
+        table1.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting() && table1.getSelectedRow() != -1) {
+                int fila = table1.getSelectedRow();
+                textField1.setText(table1.getValueAt(fila, 0).toString());
+                textField2.setText(table1.getValueAt(fila, 1).toString());
+                comboBox1.setSelectedItem(table1.getValueAt(fila, 2).toString());
+                textField3.setText(table1.getValueAt(fila, 3).toString());
+                textField4.setText(table1.getValueAt(fila, 4).toString());
+                Object idProveedor = table1.getValueAt(fila, 5);
+                textField5.setText(idProveedor != null ? idProveedor.toString() : "");
             }
         });
     }
 
-    private Connection conectarBaseDatos() {
-        try {
-            return DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/ferreteria?useSSL=false&serverTimezone=UTC",
-                    "usuario",
-                    ""
-            );
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al conectar con la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
-            return null;
-        }
+    private void cargarCategorias() {
+        comboBox1.removeAllItems();
+        comboBox1.addItem("Herramientas");
+        comboBox1.addItem("Materiales");
+        comboBox1.addItem("Construcción");
+        comboBox1.addItem("Eléctricos");
     }
 
     private void agregarProducto() {
         try {
-            if (textField1.getText().isEmpty() || textField2.getText().isEmpty()
-                    || textField3.getText().isEmpty() || textField4.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
-                return;
-            }
+            String nombre = textField2.getText();
+            String categoria = (String) comboBox1.getSelectedItem();
+            int cantidad = Integer.parseInt(textField3.getText());
+            int precio = Integer.parseInt(textField4.getText());
+            //Integer proveedor = textField5.getText().isEmpty() ? null : Integer.parseInt(textField5.getText());
 
-            String nombre_producto = textField1.getText();
-            String categoria = textField2.getText();
-            int cantidad_stock = Integer.parseInt(textField3.getText());
-            int precio_producto = Integer.parseInt(textField4.getText());
+            Inventario_productos producto = new Inventario_productos(
+                    0, nombre, categoria, precio, cantidad, 0
+            );
 
-            Inventario_productos producto = new Inventario_productos(0, nombre_producto, categoria, precio_producto, cantidad_stock, 0);
-            productosDAO.agregarProducto(producto);
+            productosDAO.agregar(producto);
             cargarProductos();
-
+            limpiarCampos();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Revisa que cantidad y precio sean numéricos.");
             JOptionPane.showMessageDialog(null, "Producto agregado correctamente.");
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Ingrese valores numéricos válidos en Cantidad y Precio.");
@@ -121,56 +109,87 @@ public class Inventario_productosGUI {
             table1.setModel(model);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al cargar productos", "Error", JOptionPane.ERROR_MESSAGE);
+
         }
     }
 
     private void actualizarProducto() {
-        int selectedRow = table1.getSelectedRow();
-        if (selectedRow != -1) {
+        int fila = table1.getSelectedRow();
+        if (fila != -1) {
             try {
-                int id = (int) table1.getValueAt(selectedRow, 0);
-                String nombre_producto = textField1.getText();
-                String categoria = textField2.getText();
-                int cantidad_stock = Integer.parseInt(textField3.getText());
-                int precio_producto = Integer.parseInt(textField4.getText());
+                int id = Integer.parseInt(textField1.getText());
+                String nombre = textField2.getText();
+                String categoria = (String) comboBox1.getSelectedItem();
+                int cantidad = Integer.parseInt(textField3.getText());
+                int precio = Integer.parseInt(textField4.getText());
+                Integer proveedor = textField5.getText().isEmpty() ? null : Integer.parseInt(textField5.getText());
 
+                Inventario_productos productos = new Inventario_productos(
+                        id, nombre, categoria, precio, cantidad, proveedor
+                );
 
-                Inventario_productos producto = new Inventario_productos(0,  nombre_producto, categoria, precio_producto, cantidad_stock,0);
-                productosDAO.actualizarProducto(producto);
+                productosDAO.actualizar(productos);
                 cargarProductos();
-                JOptionPane.showMessageDialog(null, "Producto actualizado correctamente.");
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Ingrese valores numéricos válidos en Cantidad y Precio.");
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error al actualizar el producto", "Error", JOptionPane.ERROR_MESSAGE);
+                limpiarCampos();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Revisa los valores ingresados.");
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un producto para actualizar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Selecciona un producto.");
         }
     }
 
     private void eliminarProducto() {
-        int selectedRow = table1.getSelectedRow();
-        if (selectedRow != -1) {
-            try {
-                int id = (int) table1.getValueAt(selectedRow, 0);
-                productosDAO.eliminarProducto(id);
-                cargarProductos();
-                JOptionPane.showMessageDialog(null, "Producto eliminado correctamente.");
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error al eliminar producto", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        int fila = table1.getSelectedRow();
+        if (fila != -1) {
+            int id = Integer.parseInt(textField1.getText());
+            productosDAO.eliminar(id);
+            cargarProductos();
+            limpiarCampos();
         } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un producto para eliminar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Selecciona un producto para eliminar.");
         }
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Inventario de Productos");
-        frame.setContentPane(new Inventario_productosGUI().main);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
-        frame.setVisible(true);
+    private void cargarProductos() {
+        try {
+            List<Inventario_productos> lista = productosDAO.obtenerProductos();
+            DefaultTableModel modelo = new DefaultTableModel();
+            modelo.setColumnIdentifiers(new String[]{
+                    "ID", "Nombre", "Categoría", "Cantidad", "Precio", "ID Proveedor"
+            });
+
+            for (Inventario_productos p : lista) {
+                modelo.addRow(new Object[]{
+                        p.getId_producto(), p.getNombre_producto(), p.getCategoria(),
+                        p.getCantidad_stock(), p.getPrecio_producto(), p.getId_Proveedor_asociado()
+                });
+            }
+
+            table1.setModel(modelo);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al cargar productos: " + e.getMessage());
+        }
     }
 
+    private void limpiarCampos() {
+        textField1.setText("");
+        textField2.setText("");
+        comboBox1.setSelectedIndex(0);
+        textField3.setText("");
+        textField4.setText("");
+        textField5.setText("");
+    }
+
+    public JPanel getMainPanel() {
+        return main;
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Gestión de Inventario");
+        frame.setContentPane(new Inventario_productosGUI().getMainPanel());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 500);
+        frame.setVisible(true);
+    }
 }
