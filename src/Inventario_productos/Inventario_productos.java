@@ -70,3 +70,4 @@ public class Inventario_productos {
         this.id_Proveedor_asociado = id_proveedor_asociado;
     }
 }
+
