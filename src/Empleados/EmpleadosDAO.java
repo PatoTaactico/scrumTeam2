@@ -1,78 +1,124 @@
 package Empleados;
 
 import Conexion.ConexionBD;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+public class EmpleadosDAO {
 
-public class EmpleadosDAO
-{
-    private ConexionBD conexionBD = new ConexionBD();
+    public void agregar(Empleados empleado) {
+        String sql = "INSERT INTO empleados (nombre, cargo, salario) VALUES (?, ?, ?)";
 
-    public void agregar(Empleados empleados){
-        Connection con = conexionBD.getConnection();
-        String query = "INSERT INTO empleados (nombre,cargo,salario) VALUES (?,?,?)";
+        try (Connection con = new ConexionBD().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-        try{
-            PreparedStatement pst = con.prepareStatement(query);
+            ps.setString(1, empleado.getNombre());
+            ps.setString(2, empleado.getCargo());
+            ps.setInt(3, empleado.getSalario());
+            ps.executeUpdate();
 
-            pst.setString(1,empleados.getNombre());
-            pst.setString(2,empleados.getCargo());
-            pst.setInt(3,empleados.getSalario());
-
-            int resultado = pst.executeUpdate();
-            if (resultado>0){
-                JOptionPane.showMessageDialog(null,"Se ha agregado el empleado exitosamente");
-            } else {
-                JOptionPane.showMessageDialog(null,"Error al agregar el empleado");
-            }
-        }
-        catch (SQLException e){
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Error al agregar empleado: " + e.getMessage());
         }
     }
-    public void actualizar(Empleados empleados){
-        Connection con = conexionBD.getConnection();
-        String query = "UPDATE empleados SET nombre = ?, cargo = ?, salario = ? WHERE id_empleado = ?";
 
-        try{
-            PreparedStatement pst = con.prepareStatement(query);
+    public Empleados consultarPorId(int id) {
+        String sql = "SELECT * FROM empleados WHERE id_empleado = ?";
 
-            pst.setString(1,empleados.getNombre());
-            pst.setString(2,empleados.getCargo());
-            pst.setInt(3,empleados.getSalario());
-            pst.setInt(4,empleados.getId_empleado());
+        try (Connection con = new ConexionBD().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            int resultado = pst.executeUpdate();
-            if (resultado>0){
-                JOptionPane.showMessageDialog(null,"Se ha actualizado el estado del empleado");
-            } else {
-                JOptionPane.showMessageDialog(null,"Error al actualizar el estado del empleado");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Empleados(
+                        rs.getInt("id_empleado"),
+                        rs.getString("nombre"),
+                        rs.getString("cargo"),
+                        rs.getInt("salario")
+                );
             }
+
+        } catch (SQLException e) {
+            System.err.println("Error al consultar empleado por ID: " + e.getMessage());
         }
-        catch (SQLException e){
-            e.printStackTrace();
+
+        return null;
+    }
+
+    public List<Empleados> buscarPorCampo(String campo, String valor) {
+        List<Empleados> lista = new ArrayList<>();
+        String sql;
+        PreparedStatement ps = null;
+
+        try (Connection con = new ConexionBD().getConnection()) {
+
+            switch (campo) {
+                case "nombre":
+                case "cargo":
+                    sql = "SELECT * FROM empleados WHERE " + campo + " LIKE ?";
+                    ps = con.prepareStatement(sql);
+                    ps.setString(1, "%" + valor + "%");
+                    break;
+                case "id_empleado":
+                    sql = "SELECT * FROM empleados WHERE id_empleado = ?";
+                    ps = con.prepareStatement(sql);
+                    ps.setInt(1, Integer.parseInt(valor));
+                    break;
+                default:
+                    sql = "SELECT * FROM empleados";
+                    ps = con.prepareStatement(sql);
+                    break;
+            }
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                lista.add(new Empleados(
+                        rs.getInt("id_empleado"),
+                        rs.getString("nombre"),
+                        rs.getString("cargo"),
+                        rs.getInt("salario")
+                ));
+            }
+
+        } catch (SQLException | NumberFormatException e) {
+            System.err.println("Error al buscar empleados: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    public void actualizar(Empleados empleado) {
+        String sql = "UPDATE empleados SET nombre = ?, cargo = ?, salario = ? WHERE id_empleado = ?";
+
+        try (Connection con = new ConexionBD().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, empleado.getNombre());
+            ps.setString(2, empleado.getCargo());
+            ps.setInt(3, empleado.getSalario());
+            ps.setInt(4, empleado.getId_empleado());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar empleado: " + e.getMessage());
         }
     }
-    public void eliminar(int id_empleado){
-        Connection con = conexionBD.getConnection();
-        String query = "DELETE FROM empleados WHERE id_empleado = ?";
 
-        try{
-            PreparedStatement pst = con.prepareStatement(query);
-            pst.setInt(1,id_empleado);
+    public void eliminar(int id) {
+        String sql = "DELETE FROM empleados WHERE id_empleado = ?";
 
-            int resultado = pst.executeUpdate();
-            if (resultado>0){
-                JOptionPane.showMessageDialog(null,"Empleado despedido exitosamente");
-            } else {
-                JOptionPane.showMessageDialog(null,"Error al despedir el empleado");
-            }
-        }
-        catch (SQLException e){
-            e.printStackTrace();
+        try (Connection con = new ConexionBD().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar empleado: " + e.getMessage());
         }
     }
 }

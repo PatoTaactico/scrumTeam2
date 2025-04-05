@@ -8,8 +8,6 @@ public class Inventario_productos {
     private int cantidad_stock;
     private int id_Proveedor_asociado;
 
-
-
     public Inventario_productos(int id_producto, String nombre_producto, String categoria, int precio_producto, int cantidad_stock, int id_Proveedor_asociado) {
         this.id_producto = id_producto;
         this.nombre_producto = nombre_producto;
@@ -18,9 +16,6 @@ public class Inventario_productos {
         this.cantidad_stock = cantidad_stock;
         this.id_Proveedor_asociado = id_Proveedor_asociado;
     }
-
-
-
 
     public int getId_producto() {
         return id_producto;
@@ -46,6 +41,14 @@ public class Inventario_productos {
         this.categoria = categoria;
     }
 
+    public int getPrecio_producto() {
+        return precio_producto;
+    }
+
+    public void setPrecio_producto(int precio_producto) {
+        this.precio_producto = precio_producto;
+    }
+
     public int getCantidad_stock() {
         return cantidad_stock;
     }
@@ -68,6 +71,13 @@ public class Inventario_productos {
 
     public void setId_Proveedor_asociado(Integer id_proveedor_asociado) {
         this.id_Proveedor_asociado = id_proveedor_asociado;
+
+    public int getId_Proveedor_asociado() {
+        return id_Proveedor_asociado;
+    }
+
+    public void setId_Proveedor_asociado(int id_Proveedor_asociado) {
+        this.id_Proveedor_asociado = id_Proveedor_asociado;
     }
 }
 

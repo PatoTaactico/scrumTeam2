@@ -76,8 +76,6 @@ public class Inventario_productosDAO {
         }
     }
 
-
-
     public void eliminar(int id_producto) {
         Connection con = conexionBD.getConnection();
 
@@ -146,6 +144,30 @@ public class Inventario_productosDAO {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
             e.printStackTrace();
         }
+      
+    public void agregarProducto(Inventario_productos producto) throws SQLException {
+        String query = "INSERT INTO productos(nombre_producto, categoria, precio_producto, cantidad_stock, id_Proveedor_asociado) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        pstmt.setString(1, producto.getNombre_producto());
+        pstmt.setString(2, producto.getCategoria());
+        pstmt.setInt(3, producto.getPrecio_producto());
+        pstmt.setInt(4, producto.getCantidad_stock());
+        pstmt.setInt(5, producto.getId_Proveedor_asociado());
+        pstmt.executeUpdate();
+        pstmt.close();
+    }
+
+    public void actualizarProducto(Inventario_productos producto) throws SQLException {
+        String query = "UPDATE productos SET nombre_producto = ?, categoria = ?, precio_producto = ?, cantidad_stock = ?, id_Proveedor_asociado = ? WHERE id = ?";
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        pstmt.setString(1, producto.getNombre_producto());
+        pstmt.setString(2, producto.getCategoria());
+        pstmt.setInt(3, producto.getPrecio_producto());
+        pstmt.setInt(4, producto.getCantidad_stock());
+        pstmt.setInt(5, producto.getId_Proveedor_asociado());
+        pstmt.setInt(6, producto.getId_producto());
+        pstmt.executeUpdate();
+        pstmt.close();
     }
 
 

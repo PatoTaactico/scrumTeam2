@@ -7,16 +7,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ClientesGUI {
+public class ClientesGUI extends JFrame {
     private JTextField textField1, textField2, textField3, textField4, textField5;
     private JButton crearButton, actualizarButton, eliminarButton, volverButton;
     private JPanel main;
@@ -24,6 +21,7 @@ public class ClientesGUI {
     ClientesDAO clientesDAO = new ClientesDAO();
 
     public ClientesGUI() {
+
         main = new JPanel(new BorderLayout(10, 10));
         main.setBackground(new Color(230, 230, 250));
 
@@ -100,6 +98,60 @@ public class ClientesGUI {
             jFrame.dispose();
             MenuPrincipalGUI.main(null);
         });
+
+        crearButton.addActionListener(e -> {
+            String nombre = textField2.getText();
+            String telefono = textField3.getText();
+            String direccion = textField4.getText();
+            String correo = textField5.getText();
+
+            if (!nombre.isEmpty() && !telefono.isEmpty()) {
+                clientesDAO.insertarCliente(nombre, telefono, direccion, correo);
+                obtenerDatos();
+                limpiarCampos();
+            } else {
+                JOptionPane.showMessageDialog(null, "Nombre y Teléfono son obligatorios.");
+            }
+        });
+
+        actualizarButton.addActionListener(e -> {
+            if (textField1.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Selecciona un cliente para actualizar.");
+                return;
+            }
+            int id = Integer.parseInt(textField1.getText());
+            String nombre = textField2.getText();
+            String telefono = textField3.getText();
+            String direccion = textField4.getText();
+            String correo = textField5.getText();
+
+            clientesDAO.actualizarCliente(id, nombre, telefono, direccion, correo);
+            obtenerDatos();
+            limpiarCampos();
+        });
+
+        eliminarButton.addActionListener(e -> {
+            if (textField1.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Selecciona un cliente para eliminar.");
+                return;
+            }
+            int id = Integer.parseInt(textField1.getText());
+            clientesDAO.eliminarCliente(id);
+            obtenerDatos();
+            limpiarCampos();
+        });
+
+        table1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int fila = table1.getSelectedRow();
+                textField1.setText(table1.getValueAt(fila, 0).toString());
+                textField2.setText(table1.getValueAt(fila, 1).toString());
+                textField3.setText(table1.getValueAt(fila, 2).toString());
+                textField4.setText(table1.getValueAt(fila, 3).toString());
+                textField5.setText(table1.getValueAt(fila, 4).toString());
+            }
+        });
     }
 
     public void obtenerDatos() {
@@ -129,6 +181,14 @@ public class ClientesGUI {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void limpiarCampos() {
+        textField1.setText("");
+        textField2.setText("");
+        textField3.setText("");
+        textField4.setText("");
+        textField5.setText("");
     }
 
     public static void main(String[] args) {

@@ -79,6 +79,37 @@ public class Inventario_productosGUI {
             limpiarCampos();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Revisa que cantidad y precio sean numéricos.");
+            JOptionPane.showMessageDialog(null, "Producto agregado correctamente.");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Ingrese valores numéricos válidos en Cantidad y Precio.");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al agregar el producto.");
+        }
+    }
+
+    private void cargarProductos() {
+        try {
+            List<Inventario_productos> productos = productosDAO.obtenerProductos();
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("id_producto");
+            model.addColumn("nombre_producto");
+            model.addColumn("Categoría");
+            model.addColumn("cantidad_stock");
+            model.addColumn("precio_producto");
+
+            for (Inventario_productos p : productos) {
+                model.addRow(new Object[]{
+                        p.getId_producto(),
+                        p.getNombre_producto(),
+                        p.getCategoria(),
+                        p.getCantidad_stock(),
+                        p.getPrecio_producto()
+                });
+            }
+            table1.setModel(model);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al cargar productos", "Error", JOptionPane.ERROR_MESSAGE);
+
         }
     }
 

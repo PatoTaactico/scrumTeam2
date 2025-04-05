@@ -1,10 +1,10 @@
 package Empleados;
 
 public class Empleados {
-    int id_empleado;
-    String nombre;
-    String cargo;
-    int salario;
+    private int id_empleado;
+    private String nombre;
+    private String cargo;
+    private int salario;
 
     public Empleados(int id_empleado, String nombre, String cargo, int salario) {
         this.id_empleado = id_empleado;
@@ -43,5 +43,10 @@ public class Empleados {
 
     public void setSalario(int salario) {
         this.salario = salario;
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " - " + cargo;
     }
 }
