@@ -162,3 +162,4 @@ public class Inventario_productosGUI {
         frame.setVisible(true);
     }
 }
+

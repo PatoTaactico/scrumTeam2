@@ -94,9 +94,9 @@
         </constraints>
         <properties>
           <model>
-            <item value="pendiente"/>
-            <item value="pagada"/>
-            <item value="enviada"/>
+            <item value="Pendiente"/>
+            <item value="Pagada"/>
+            <item value="Enviada"/>
           </model>
         </properties>
       </component>
