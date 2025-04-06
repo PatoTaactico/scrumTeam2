@@ -10,6 +10,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+/**
+ * Interfaz gráfica para la gestión de empleados.
+ * Permite agregar, consultar, actualizar y eliminar empleados.
+ */
 public class EmpleadosGUI {
     private JTextField textField1, textField2, textField3, buscarField;
     private JComboBox<String> comboBox1, comboBusqueda;
@@ -18,7 +22,12 @@ public class EmpleadosGUI {
     private JTable table1;
     EmpleadosDAO empleadosDAO = new EmpleadosDAO();
 
+    /**
+     * Constructor de la interfaz gráfica de empleados.
+     * Inicializa los componentes y configura los eventos.
+     */
     public EmpleadosGUI() {
+        // Configuración del panel principal
         main = new JPanel(new BorderLayout(10, 10));
         main.setBackground(new Color(230, 230, 250));
 
@@ -95,6 +104,13 @@ public class EmpleadosGUI {
         agregarEventos();
     }
 
+    /**
+     * Crea un botón estilizado con el texto y color dados.
+     *
+     * @param text Texto del botón.
+     * @param color Color de fondo del botón.
+     * @return JButton con estilo personalizado.
+     */
     private JButton createStyledButton(String text, Color color) {
         JButton button = new JButton(text);
         button.setBackground(color);
@@ -105,6 +121,9 @@ public class EmpleadosGUI {
         return button;
     }
 
+    /**
+     * Agrega los eventos a los botones y tabla.
+     */
     private void agregarEventos() {
         agregarButton.addActionListener(e -> {
             String nombre = textField2.getText().trim();
@@ -127,7 +146,6 @@ public class EmpleadosGUI {
                 JOptionPane.showMessageDialog(null, "El salario debe ser un número.");
             }
         });
-
 
         consultarButton.addActionListener(e -> {
             if (!panelBusqueda.isVisible()) {
@@ -193,7 +211,6 @@ public class EmpleadosGUI {
             }
         });
 
-
         eliminarButton.addActionListener(e -> {
             try {
                 int id_empleado = Integer.parseInt(textField1.getText());
@@ -205,7 +222,6 @@ public class EmpleadosGUI {
                 JOptionPane.showMessageDialog(null, "Seleccione un empleado válido para eliminar.");
             }
         });
-
 
         table1.addMouseListener(new MouseAdapter() {
             @Override
@@ -227,6 +243,9 @@ public class EmpleadosGUI {
         });
     }
 
+    /**
+     * Limpia los campos del formulario.
+     */
     public void clear() {
         textField1.setText("");
         textField2.setText("");
@@ -235,11 +254,19 @@ public class EmpleadosGUI {
         buscarField.setText("");
     }
 
+    /**
+     * Obtiene los empleados desde la base de datos y actualiza la tabla.
+     */
     public void obtenerDatos() {
         List<Empleados> lista = empleadosDAO.buscarPorCampo("nombre", "");
         llenarTabla(lista);
     }
 
+    /**
+     * Llena la tabla con los datos de los empleados.
+     *
+     * @param lista Lista de empleados a mostrar.
+     */
     private void llenarTabla(List<Empleados> lista) {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID Empleado");
@@ -259,6 +286,11 @@ public class EmpleadosGUI {
         table1.setModel(model);
     }
 
+    /**
+     * Método principal para ejecutar la interfaz de empleados.
+     *
+     * @param args Argumentos de línea de comandos.
+     */
     public static void main(String[] args) {
         JFrame frame = new JFrame("Empleados");
         frame.setContentPane(new EmpleadosGUI().main);

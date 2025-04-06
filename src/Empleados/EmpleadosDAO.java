@@ -5,8 +5,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase de acceso a datos (DAO) para la entidad Empleados.
+ * Se encarga de realizar operaciones CRUD en la base de datos.
+ */
 public class EmpleadosDAO {
 
+    /**
+     * Agrega un nuevo empleado a la base de datos.
+     *
+     * @param empleado Objeto Empleados a agregar
+     */
     public void agregar(Empleados empleado) {
         String sql = "INSERT INTO empleados (nombre, cargo, salario) VALUES (?, ?, ?)";
 
@@ -23,6 +32,12 @@ public class EmpleadosDAO {
         }
     }
 
+    /**
+     * Consulta un empleado en la base de datos según su ID.
+     *
+     * @param id ID del empleado a consultar
+     * @return Objeto Empleados si se encuentra, o null si no
+     */
     public Empleados consultarPorId(int id) {
         String sql = "SELECT * FROM empleados WHERE id_empleado = ?";
 
@@ -48,6 +63,13 @@ public class EmpleadosDAO {
         return null;
     }
 
+    /**
+     * Busca empleados por un campo específico.
+     *
+     * @param campo Campo por el cual filtrar (nombre, cargo o id_empleado)
+     * @param valor Valor a buscar
+     * @return Lista de empleados que cumplen con el criterio
+     */
     public List<Empleados> buscarPorCampo(String campo, String valor) {
         List<Empleados> lista = new ArrayList<>();
         String sql;
@@ -91,6 +113,11 @@ public class EmpleadosDAO {
         return lista;
     }
 
+    /**
+     * Actualiza un empleado existente en la base de datos.
+     *
+     * @param empleado Objeto Empleados con los nuevos datos
+     */
     public void actualizar(Empleados empleado) {
         String sql = "UPDATE empleados SET nombre = ?, cargo = ?, salario = ? WHERE id_empleado = ?";
 
@@ -108,6 +135,11 @@ public class EmpleadosDAO {
         }
     }
 
+    /**
+     * Elimina un empleado de la base de datos por su ID.
+     *
+     * @param id ID del empleado a eliminar
+     */
     public void eliminar(int id) {
         String sql = "DELETE FROM empleados WHERE id_empleado = ?";
 
