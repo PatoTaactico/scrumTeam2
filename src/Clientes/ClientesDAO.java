@@ -10,7 +10,6 @@ import java.sql.SQLException;
 public class ClientesDAO {
     private ConexionBD conexionBD = new ConexionBD();
 
-    // Método original
     public void agregar(Clientes clientes) {
         Connection con = conexionBD.getConnection();
         String query = "INSERT INTO clientes (nombre,telefono,direccion,correo) VALUES (?,?,?,?)";
@@ -33,7 +32,6 @@ public class ClientesDAO {
         }
     }
 
-    // Método original
     public void actualizar(Clientes clientes) {
         Connection con = conexionBD.getConnection();
         String query = "UPDATE clientes SET nombre = ?, telefono = ?, direccion = ?, correo = ? WHERE id_cliente = ?";
@@ -57,7 +55,6 @@ public class ClientesDAO {
         }
     }
 
-    // Método original
     public void eliminar(int id_cliente) {
         Connection con = conexionBD.getConnection();
         String query = "DELETE FROM clientes WHERE id_cliente = ?";
@@ -77,7 +74,6 @@ public class ClientesDAO {
         }
     }
 
-    // Métodos añadidos para funcionar con ClientesGUI
     public void insertarCliente(String nombre, String telefono, String direccion, String correo) {
         Clientes cliente = new Clientes();
         cliente.setNombre(nombre);

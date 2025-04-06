@@ -28,11 +28,9 @@ public class MenuPrincipalGUI {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(600, 0, 0, 0); // Ajuste para bajar los botones
 
-        // Panel para los botones
         JPanel botonesPanel = new JPanel(new GridLayout(1, 6, 20, 10));
         botonesPanel.setOpaque(false);
 
-        // Inicializar botones
         clientesButton = crearBoton("Clientes");
         empleadosButton = crearBoton("Empleados");
         proveedoresButton = crearBoton("Proveedores");
@@ -40,7 +38,6 @@ public class MenuPrincipalGUI {
         ordenesButton = crearBoton("Órdenes de Compra");
         registrosButton = crearBoton("Registro de Ventas");
 
-        // Agregar botones al panel
         botonesPanel.add(clientesButton);
         botonesPanel.add(empleadosButton);
         botonesPanel.add(proveedoresButton);

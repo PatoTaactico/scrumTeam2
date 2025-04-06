@@ -1,7 +1,6 @@
 package Inventario;
 
 import Conexion.ConexionBD;
-import Empleados.EmpleadosDAO;
 import MenuPrincipal.MenuPrincipalGUI;
 
 import javax.swing.*;
@@ -24,7 +23,6 @@ public class InventarioGUI {
     private JButton volverButton;
 
     InventarioDAO inventarioDAO = new InventarioDAO();
-    EmpleadosDAO empleadosDAO = new EmpleadosDAO();
     ConexionBD conexionBD = new ConexionBD();
 
     public InventarioGUI() {

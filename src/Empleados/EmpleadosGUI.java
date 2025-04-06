@@ -1,6 +1,5 @@
 package Empleados;
 
-import Conexion.ConexionBD;
 import MenuPrincipal.MenuPrincipalGUI;
 
 import javax.swing.*;
@@ -9,10 +8,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 public class EmpleadosGUI {
