@@ -2,7 +2,7 @@ package MenuPrincipal;
 
 import Clientes.ClientesGUI;
 import Empleados.EmpleadosGUI;
-import Inventario_productos.Inventario_productosGUI;
+import Inventario.InventarioGUI;
 import Ordenes_compra.Ordenes_compraGUI;
 import Proveedores.ProveedoresGUI;
 import Registro_ventas.Registro_ventasGUI;
@@ -67,7 +67,7 @@ public class MenuPrincipalGUI {
         clientesButton.addActionListener(e -> abrirVentana(ClientesGUI.class));
         empleadosButton.addActionListener(e -> abrirVentana(EmpleadosGUI.class));
         proveedoresButton.addActionListener(e -> abrirVentana(ProveedoresGUI.class));
-        inventarioButton.addActionListener(e -> abrirVentana(Inventario_productosGUI.class));
+        inventarioButton.addActionListener(e -> abrirVentana(InventarioGUI.class));
         ordenesButton.addActionListener(e -> abrirVentana(Ordenes_compraGUI.class));
         registrosButton.addActionListener(e -> abrirVentana(Registro_ventasGUI.class));
     }

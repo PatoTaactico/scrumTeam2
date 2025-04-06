@@ -1,20 +1,21 @@
-package Inventario_productos;
+package Inventario;
 
-public class Inventario_productos {
+public class Inventario {
     private int id_producto;
     private String nombre_producto;
     private String categoria;
-    private int precio_producto;
     private int cantidad_stock;
-    private int id_Proveedor_asociado;
+    private int precio_producto;
+    private Integer id_proveedor_asociado;
 
-    public Inventario_productos(int id_producto, String nombre_producto, String categoria, int precio_producto, int cantidad_stock, int id_Proveedor_asociado) {
+    public Inventario(int id_producto, String nombre_producto, String categoria,
+                      int cantidad_stock, int precio_producto, Integer id_proveedor_asociado) {
         this.id_producto = id_producto;
         this.nombre_producto = nombre_producto;
         this.categoria = categoria;
-        this.precio_producto = precio_producto;
         this.cantidad_stock = cantidad_stock;
-        this.id_Proveedor_asociado = id_Proveedor_asociado;
+        this.precio_producto = precio_producto;
+        this.id_proveedor_asociado = id_proveedor_asociado;
     }
 
     public int getId_producto() {
@@ -41,14 +42,6 @@ public class Inventario_productos {
         this.categoria = categoria;
     }
 
-    public int getPrecio_producto() {
-        return precio_producto;
-    }
-
-    public void setPrecio_producto(int precio_producto) {
-        this.precio_producto = precio_producto;
-    }
-
     public int getCantidad_stock() {
         return cantidad_stock;
     }
@@ -65,19 +58,11 @@ public class Inventario_productos {
         this.precio_producto = precio_producto;
     }
 
-    public Integer getId_Proveedor_asociado() {
-        return id_Proveedor_asociado;
+    public Integer getId_proveedor_asociado() {
+        return id_proveedor_asociado;
     }
 
-    public void setId_Proveedor_asociado(Integer id_proveedor_asociado) {
-        this.id_Proveedor_asociado = id_proveedor_asociado;
-
-    public int getId_Proveedor_asociado() {
-        return id_Proveedor_asociado;
-    }
-
-    public void setId_Proveedor_asociado(int id_Proveedor_asociado) {
-        this.id_Proveedor_asociado = id_Proveedor_asociado;
+    public void setId_proveedor_asociado(Integer id_proveedor_asociado) {
+        this.id_proveedor_asociado = id_proveedor_asociado;
     }
 }
-
