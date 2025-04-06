@@ -13,15 +13,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Clase ClientesGUI que representa la interfaz gráfica de gestión de clientes.
+ * Permite crear, actualizar, eliminar y visualizar registros de clientes almacenados en una base de datos.
+ */
 public class ClientesGUI extends JFrame {
     private JTextField textField1, textField2, textField3, textField4, textField5;
     private JButton crearButton, actualizarButton, eliminarButton, volverButton;
     private JPanel main;
     private JTable table1;
+
+    /** Objeto DAO que maneja operaciones con la base de datos para clientes */
     ClientesDAO clientesDAO = new ClientesDAO();
 
+    /**
+     * Constructor que configura la interfaz gráfica y carga los datos iniciales.
+     */
     public ClientesGUI() {
-
         main = new JPanel(new BorderLayout(10, 10));
         main.setBackground(new Color(230, 230, 250));
 
@@ -82,6 +90,13 @@ public class ClientesGUI extends JFrame {
         agregarEventos();
     }
 
+    /**
+     * Crea un botón estilizado con color y formato definidos.
+     *
+     * @param text  Texto a mostrar en el botón
+     * @param color Color de fondo del botón
+     * @return JButton estilizado
+     */
     private JButton createStyledButton(String text, Color color) {
         JButton button = new JButton(text);
         button.setBackground(color);
@@ -92,6 +107,9 @@ public class ClientesGUI extends JFrame {
         return button;
     }
 
+    /**
+     * Agrega los eventos a los botones de la interfaz.
+     */
     private void agregarEventos() {
         volverButton.addActionListener(e -> {
             JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(volverButton);
@@ -154,6 +172,9 @@ public class ClientesGUI extends JFrame {
         });
     }
 
+    /**
+     * Obtiene los datos de los clientes desde la base de datos y los carga en la tabla.
+     */
     public void obtenerDatos() {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID Cliente");
@@ -183,6 +204,9 @@ public class ClientesGUI extends JFrame {
         }
     }
 
+    /**
+     * Limpia los campos de texto del formulario.
+     */
     private void limpiarCampos() {
         textField1.setText("");
         textField2.setText("");
@@ -191,6 +215,11 @@ public class ClientesGUI extends JFrame {
         textField5.setText("");
     }
 
+    /**
+     * Método main para iniciar la ventana principal de clientes.
+     *
+     * @param args Argumentos de línea de comandos
+     */
     public static void main(String[] args) {
         JFrame frame = new JFrame("Clientes");
         frame.setContentPane(new ClientesGUI().main);
