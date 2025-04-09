@@ -96,3 +96,4 @@ public class Ordenes_compraGUI extends JFrame {
         SwingUtilities.invokeLater(() -> new Ordenes_compraGUI().setVisible(true));
     }
 }
+

@@ -67,3 +67,4 @@ public class Ordenes_compra {
         this.estado_orden = estado_orden;
     }
 }
+
