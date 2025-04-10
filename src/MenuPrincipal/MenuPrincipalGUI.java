@@ -5,7 +5,7 @@ import Empleados.EmpleadosGUI;
 import Inventario.InventarioGUI;
 import Ordenes_compra.Ordenes_compraGUI;
 import Proveedores.ProveedoresGUI;
-import Registro_ventas.Registro_ventasGUI;
+//import Registro_ventas.Registro_ventasGUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,7 +66,7 @@ public class MenuPrincipalGUI {
         proveedoresButton.addActionListener(e -> abrirVentana(ProveedoresGUI.class));
         inventarioButton.addActionListener(e -> abrirVentana(InventarioGUI.class));
         ordenesButton.addActionListener(e -> abrirVentana(Ordenes_compraGUI.class));
-        registrosButton.addActionListener(e -> abrirVentana(Registro_ventasGUI.class));
+//        registrosButton.addActionListener(e -> abrirVentana(Registro_ventasGUI.class));
     }
 
     private void abrirVentana(Class<?> clase) {
