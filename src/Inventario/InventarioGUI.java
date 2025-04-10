@@ -4,7 +4,9 @@ import Conexion.ConexionBD;
 import MenuPrincipal.MenuPrincipalGUI;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
@@ -26,106 +28,155 @@ public class InventarioGUI {
     ConexionBD conexionBD = new ConexionBD();
 
     public InventarioGUI() {
+        main = new JPanel(new BorderLayout(10, 10));
+        main.setBackground(new Color(230, 230, 250));
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        topPanel.setBackground(new Color(200, 200, 255));
+
+        JPanel formPanel = new JPanel(new GridLayout(6, 2, 10, 10));
+        formPanel.setBorder(BorderFactory.createTitledBorder("Datos del Producto"));
+        formPanel.setBackground(new Color(220, 220, 250));
+
+        formPanel.add(new JLabel("ID:"));
+        id = new JTextField();
+        id.setEnabled(false);
+        formPanel.add(id);
+
+        formPanel.add(new JLabel("Nombre:"));
+        nombre = new JTextField();
+        formPanel.add(nombre);
+
+        formPanel.add(new JLabel("Categoría:"));
+        categoria = new JTextField();
+        categoria.setEnabled(false);
+        formPanel.add(categoria);
+
+        formPanel.add(new JLabel("Precio:"));
+        precio = new JTextField();
+        formPanel.add(precio);
+
+        formPanel.add(new JLabel("Stock:"));
+        cantidad_stock = new JTextField();
+        formPanel.add(cantidad_stock);
+
+        formPanel.add(new JLabel("ID Proveedor:"));
+        id_proveedor = new JComboBox<>();
+        formPanel.add(id_proveedor);
+
+        topPanel.add(formPanel, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        buttonPanel.setBackground(new Color(200, 200, 255));
+
+        agregarButton = createStyledButton("Agregar", new Color(76, 175, 80));
+        actualizarButton = createStyledButton("Actualizar", new Color(33, 150, 243));
+        eliminarButton = createStyledButton("Eliminar", new Color(244, 67, 54));
+        volverButton = createStyledButton("Volver", new Color(255, 152, 0));
+
+        buttonPanel.add(agregarButton);
+        buttonPanel.add(actualizarButton);
+        buttonPanel.add(eliminarButton);
+        buttonPanel.add(volverButton);
+
+        topPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        table1 = new JTable();
+        table1.setBackground(new Color(255, 250, 205));
+        JScrollPane scrollPane = new JScrollPane(table1);
+
+        main.add(topPanel, BorderLayout.NORTH);
+        main.add(scrollPane, BorderLayout.CENTER);
+
         obtener_datos();
         cargarIdsProveedores();
-        id.setEnabled(false);
-        categoria.setEnabled(false); // No editable
+        agregarEventos();
+    }
 
-        // Evento al seleccionar proveedor
-        id_proveedor.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Integer selectedId = (Integer) id_proveedor.getSelectedItem();
-                if (selectedId != null) {
-                    try (Connection con = conexionBD.getConnection()) {
-                        String sql = "SELECT categoria_producto FROM proveedores WHERE id_proveedor = ?";
-                        PreparedStatement ps = con.prepareStatement(sql);
-                        ps.setInt(1, selectedId);
-                        ResultSet rs = ps.executeQuery();
+    private JButton createStyledButton(String text, Color color) {
+        JButton button = new JButton(text);
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1, true));
+        button.setPreferredSize(new Dimension(90, 35));
+        return button;
+    }
 
-                        if (rs.next()) {
-                            String nombreCategoria = rs.getString("categoria_producto");
-                            categoria.setText(nombreCategoria);
-                        } else {
-                            categoria.setText("");
-                        }
+    private void agregarEventos() {
+        id_proveedor.addActionListener(e -> {
+            Integer selectedId = (Integer) id_proveedor.getSelectedItem();
+            if (selectedId != null) {
+                try (Connection con = conexionBD.getConnection()) {
+                    String sql = "SELECT categoria_producto FROM proveedores WHERE id_proveedor = ?";
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    ps.setInt(1, selectedId);
+                    ResultSet rs = ps.executeQuery();
 
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(null, "Error al obtener la categoría del proveedor.");
+                    if (rs.next()) {
+                        categoria.setText(rs.getString("categoria_producto"));
+                    } else {
+                        categoria.setText("");
                     }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error al obtener la categoría del proveedor.");
                 }
             }
         });
 
+        agregarButton.addActionListener(e -> {
+            String nombreProducto = nombre.getText();
+            String categoriaProducto = categoria.getText();
+            int precioProducto = Integer.parseInt(precio.getText());
+            int cantidadStock = Integer.parseInt(cantidad_stock.getText());
+            Integer idProveedor = (Integer) id_proveedor.getSelectedItem();
 
-        agregarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nombreProducto = nombre.getText();
-                String categoriaProducto = categoria.getText();
-                int precioProducto = Integer.parseInt(precio.getText());
-                int cantidadStock = Integer.parseInt(cantidad_stock.getText());
-                Integer idProveedor = (Integer) id_proveedor.getSelectedItem();
-
-                Inventario inventario = new Inventario(0, nombreProducto, categoriaProducto, cantidadStock, precioProducto, idProveedor);
-                inventarioDAO.agregar(inventario);
-                obtener_datos();
-                clear();
-            }
+            Inventario inventario = new Inventario(0, nombreProducto, categoriaProducto, cantidadStock, precioProducto, idProveedor);
+            inventarioDAO.agregar(inventario);
+            obtener_datos();
+            clear();
         });
 
-        actualizarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nombreProducto = nombre.getText();
-                String categoriaProducto = categoria.getText();
-                int precioProducto = Integer.parseInt(precio.getText());
-                int cantidadStock = Integer.parseInt(cantidad_stock.getText());
-                int idProducto = Integer.parseInt(id.getText());
-                Integer idProveedor = (Integer) id_proveedor.getSelectedItem();
+        actualizarButton.addActionListener(e -> {
+            String nombreProducto = nombre.getText();
+            String categoriaProducto = categoria.getText();
+            int precioProducto = Integer.parseInt(precio.getText());
+            int cantidadStock = Integer.parseInt(cantidad_stock.getText());
+            int idProducto = Integer.parseInt(id.getText());
+            Integer idProveedor = (Integer) id_proveedor.getSelectedItem();
 
-                Inventario inventario = new Inventario(idProducto, nombreProducto, categoriaProducto, cantidadStock, precioProducto, idProveedor);
-                inventarioDAO.actualizar(inventario);
-                obtener_datos();
-                clear();
-            }
+            Inventario inventario = new Inventario(idProducto, nombreProducto, categoriaProducto, cantidadStock, precioProducto, idProveedor);
+            inventarioDAO.actualizar(inventario);
+            obtener_datos();
+            clear();
         });
 
-        eliminarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int idProducto = Integer.parseInt(id.getText());
-                inventarioDAO.eliminar(idProducto);
-                obtener_datos();
-                clear();
-            }
+        eliminarButton.addActionListener(e -> {
+            int idProducto = Integer.parseInt(id.getText());
+            inventarioDAO.eliminar(idProducto);
+            obtener_datos();
+            clear();
         });
 
         table1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int selectFila = table1.getSelectedRow();
-                if (selectFila >= 0) {
-                    id.setText(table1.getValueAt(selectFila, 0).toString());
-                    nombre.setText(table1.getValueAt(selectFila, 1).toString());
-                    categoria.setText(table1.getValueAt(selectFila, 2).toString());
-                    cantidad_stock.setText(table1.getValueAt(selectFila, 3).toString());
-                    precio.setText(table1.getValueAt(selectFila, 4).toString());
-
-                    Object proveedorValue = table1.getValueAt(selectFila, 5);
-                    id_proveedor.setSelectedItem(proveedorValue);
-                }
+                int fila = table1.getSelectedRow();
+                id.setText(table1.getValueAt(fila, 0).toString());
+                nombre.setText(table1.getValueAt(fila, 1).toString());
+                categoria.setText(table1.getValueAt(fila, 2).toString());
+                cantidad_stock.setText(table1.getValueAt(fila, 3).toString());
+                precio.setText(table1.getValueAt(fila, 4).toString());
+                id_proveedor.setSelectedItem(table1.getValueAt(fila, 5));
             }
         });
 
-        volverButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(volverButton);
-                jFrame.dispose();
-                MenuPrincipalGUI.main(null);
-            }
+        volverButton.addActionListener(e -> {
+            JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(volverButton);
+            jFrame.dispose();
+            MenuPrincipalGUI.main(null);
         });
     }
 
@@ -137,8 +188,7 @@ public class InventarioGUI {
 
             id_proveedor.removeAllItems();
             while (rs.next()) {
-                int id = rs.getInt("id_proveedor");
-                id_proveedor.addItem(id);
+                id_proveedor.addItem(rs.getInt("id_proveedor"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -165,22 +215,19 @@ public class InventarioGUI {
         model.addColumn("id_proveedor_asociado");
 
         table1.setModel(model);
-        Object[] dato = new Object[6];
-        Connection con = conexionBD.getConnection();
-
-        try {
+        try (Connection con = conexionBD.getConnection()) {
             Statement stmt = con.createStatement();
-            String query = "SELECT * FROM inventario_productos";
-            ResultSet rs = stmt.executeQuery(query);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM inventario_productos");
 
             while (rs.next()) {
-                dato[0] = rs.getInt("id_producto");
-                dato[1] = rs.getString("nombre_producto");
-                dato[2] = rs.getString("categoria");
-                dato[3] = rs.getInt("cantidad_stock");
-                dato[4] = rs.getInt("precio_producto");
-                dato[5] = rs.getObject("id_proveedor_asociado");
-                model.addRow(dato);
+                model.addRow(new Object[]{
+                        rs.getInt("id_producto"),
+                        rs.getString("nombre_producto"),
+                        rs.getString("categoria"),
+                        rs.getInt("cantidad_stock"),
+                        rs.getInt("precio_producto"),
+                        rs.getObject("id_proveedor_asociado")
+                });
             }
         } catch (SQLException e) {
             e.printStackTrace();
