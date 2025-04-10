@@ -1,11 +1,12 @@
 package MenuPrincipal;
 
+import Chat.ChatServidorGUI;
 import Clientes.ClientesGUI;
 import Empleados.EmpleadosGUI;
 import Inventario.InventarioGUI;
 import Ordenes_compra.Ordenes_compraGUI;
 import Proveedores.ProveedoresGUI;
-//import Registro_ventas.Registro_ventasGUI;
+// import Registro_ventas.Registro_ventasGUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,16 +20,17 @@ public class MenuPrincipalGUI {
     private JButton inventarioButton;
     private JButton ordenesButton;
     private JButton registrosButton;
+    private JButton chatButton;
 
     public MenuPrincipalGUI() {
         main = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 1; // Posiciona los botones en el centro vertical
+        gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(600, 0, 0, 0); // Ajuste para bajar los botones
+        gbc.insets = new Insets(100, 0, 0, 0); // margen superior
 
-        JPanel botonesPanel = new JPanel(new GridLayout(1, 6, 20, 10));
+        JPanel botonesPanel = new JPanel(new GridLayout(3, 3, 20, 20));
         botonesPanel.setOpaque(false);
 
         clientesButton = crearBoton("Clientes");
@@ -37,13 +39,22 @@ public class MenuPrincipalGUI {
         inventarioButton = crearBoton("Inventario");
         ordenesButton = crearBoton("Órdenes de Compra");
         registrosButton = crearBoton("Registro de Ventas");
+        chatButton = crearBoton("Chat");
 
+        // Fila 1
         botonesPanel.add(clientesButton);
         botonesPanel.add(empleadosButton);
         botonesPanel.add(proveedoresButton);
+
+        // Fila 2
         botonesPanel.add(inventarioButton);
         botonesPanel.add(ordenesButton);
         botonesPanel.add(registrosButton);
+
+        // Fila 3: espacio - Chat - espacio
+        botonesPanel.add(new JLabel());
+        botonesPanel.add(chatButton);
+        botonesPanel.add(new JLabel());
 
         main.add(botonesPanel, gbc);
         configurarAcciones();
@@ -66,7 +77,15 @@ public class MenuPrincipalGUI {
         proveedoresButton.addActionListener(e -> abrirVentana(ProveedoresGUI.class));
         inventarioButton.addActionListener(e -> abrirVentana(InventarioGUI.class));
         ordenesButton.addActionListener(e -> abrirVentana(Ordenes_compraGUI.class));
-//        registrosButton.addActionListener(e -> abrirVentana(Registro_ventasGUI.class));
+        // registrosButton.addActionListener(e -> abrirVentana(Registro_ventasGUI.class));
+
+        chatButton.addActionListener(e -> {
+            JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(main);
+            if (jFrame != null) {
+                jFrame.dispose();
+            }
+            ChatServidorGUI.main(null); // Abre el chat del SERVIDOR
+        });
     }
 
     private void abrirVentana(Class<?> clase) {
