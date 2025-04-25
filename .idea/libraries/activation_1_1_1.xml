@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="activation-1.1.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/Visual/activation-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/Visual/flatlaf-3.5.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/Visual/flatlaf-intellij-themes-3.5.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/Visual/itextpdf-5.5.13.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/Visual/javax.mail-1.6.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/Visual/javax.mail-api-1.6.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
