@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-04-2025 a las 07:18:53
+-- Tiempo de generación: 25-04-2025 a las 11:14:41
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -41,7 +41,22 @@ CREATE TABLE `clientes` (
 
 INSERT INTO `clientes` (`id_cliente`, `nombre`, `telefono`, `direccion`, `correo`) VALUES
 (3, 'cliente 3', '567567', 'carrera 6', '3333'),
-(4, 'diana', '312', 'calle31', 'ygmail');
+(4, 'diana', '312', 'calle32', 'ygmail'),
+(5, 'Santiago', '12323434', 'Carrera 43', 'gmail');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_orden`
+--
+
+CREATE TABLE `detalle_orden` (
+  `id_detalle` int(11) NOT NULL,
+  `id_orden_compra` int(11) DEFAULT NULL,
+  `id_producto` int(11) DEFAULT NULL,
+  `cantidad` int(11) DEFAULT NULL,
+  `precio_unitario` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -79,6 +94,13 @@ CREATE TABLE `inventario_productos` (
   `id_proveedor_asociado` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `inventario_productos`
+--
+
+INSERT INTO `inventario_productos` (`id_producto`, `nombre_producto`, `categoria`, `cantidad_stock`, `precio_producto`, `id_proveedor_asociado`) VALUES
+(2, 'cable', 'electricidad', 42, 2000, 5);
+
 -- --------------------------------------------------------
 
 --
@@ -89,10 +111,21 @@ CREATE TABLE `ordenes_compra` (
   `id_orden_compra` int(11) NOT NULL,
   `id_cliente` int(11) DEFAULT NULL,
   `id_empleado` int(11) DEFAULT NULL,
-  `total` int(10) DEFAULT NULL,
-  `estado_orden` enum('pendiente','pagada','enviada') DEFAULT 'pendiente',
-  `fecha_compra` timestamp NOT NULL DEFAULT current_timestamp()
+  `id_producto` int(11) DEFAULT NULL,
+  `total` int(11) DEFAULT NULL,
+  `fecha_compra` timestamp NOT NULL DEFAULT current_timestamp(),
+  `estado_orden` enum('pendiente','pagada','enviada','') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ordenes_compra`
+--
+
+INSERT INTO `ordenes_compra` (`id_orden_compra`, `id_cliente`, `id_empleado`, `id_producto`, `total`, `fecha_compra`, `estado_orden`) VALUES
+(1, 3, 2, 2, 28560, '2025-04-25 06:53:53', 'pendiente'),
+(2, 3, 2, 2, 28560, '2025-04-25 06:55:28', 'pendiente'),
+(3, 3, 2, 2, 23800, '2025-04-25 06:57:31', 'pendiente'),
+(4, 3, 2, 2, 52360, '2025-04-25 06:57:44', 'pendiente');
 
 -- --------------------------------------------------------
 
@@ -133,9 +166,19 @@ CREATE TABLE `registro_ventas` (
   `id_venta` int(11) NOT NULL,
   `id_orden_compra` int(11) DEFAULT NULL,
   `id_producto` int(11) DEFAULT NULL,
+  `id_cliente` int(11) NOT NULL,
+  `id_empleado` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
-  `sub_total` int(10) NOT NULL
+  `sub_total` int(10) NOT NULL,
+  `precio_producto` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `registro_ventas`
+--
+
+INSERT INTO `registro_ventas` (`id_venta`, `id_orden_compra`, `id_producto`, `id_cliente`, `id_empleado`, `cantidad`, `sub_total`, `precio_producto`) VALUES
+(1, 4, 2, 3, 2, 22, 44000, 2000);
 
 --
 -- Índices para tablas volcadas
@@ -146,6 +189,14 @@ CREATE TABLE `registro_ventas` (
 --
 ALTER TABLE `clientes`
   ADD PRIMARY KEY (`id_cliente`);
+
+--
+-- Indices de la tabla `detalle_orden`
+--
+ALTER TABLE `detalle_orden`
+  ADD PRIMARY KEY (`id_detalle`),
+  ADD KEY `id_orden_compra` (`id_orden_compra`),
+  ADD KEY `id_producto` (`id_producto`);
 
 --
 -- Indices de la tabla `empleados`
@@ -166,7 +217,8 @@ ALTER TABLE `inventario_productos`
 ALTER TABLE `ordenes_compra`
   ADD PRIMARY KEY (`id_orden_compra`),
   ADD KEY `id_cliente` (`id_cliente`),
-  ADD KEY `id_empleado` (`id_empleado`);
+  ADD KEY `id_empleado` (`id_empleado`),
+  ADD KEY `id_producto` (`id_producto`);
 
 --
 -- Indices de la tabla `proveedores`
@@ -180,7 +232,9 @@ ALTER TABLE `proveedores`
 ALTER TABLE `registro_ventas`
   ADD PRIMARY KEY (`id_venta`),
   ADD KEY `id_orden_compra` (`id_orden_compra`),
-  ADD KEY `id_producto` (`id_producto`);
+  ADD KEY `id_producto` (`id_producto`),
+  ADD KEY `id_cliente` (`id_cliente`),
+  ADD KEY `id_empleado` (`id_empleado`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -190,7 +244,13 @@ ALTER TABLE `registro_ventas`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de la tabla `detalle_orden`
+--
+ALTER TABLE `detalle_orden`
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `empleados`
@@ -202,13 +262,13 @@ ALTER TABLE `empleados`
 -- AUTO_INCREMENT de la tabla `inventario_productos`
 --
 ALTER TABLE `inventario_productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `ordenes_compra`
 --
 ALTER TABLE `ordenes_compra`
-  MODIFY `id_orden_compra` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_orden_compra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
@@ -220,11 +280,18 @@ ALTER TABLE `proveedores`
 -- AUTO_INCREMENT de la tabla `registro_ventas`
 --
 ALTER TABLE `registro_ventas`
-  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `detalle_orden`
+--
+ALTER TABLE `detalle_orden`
+  ADD CONSTRAINT `detalle_orden_ibfk_1` FOREIGN KEY (`id_orden_compra`) REFERENCES `ordenes_compra` (`id_orden_compra`),
+  ADD CONSTRAINT `detalle_orden_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `inventario_productos` (`id_producto`);
 
 --
 -- Filtros para la tabla `inventario_productos`
