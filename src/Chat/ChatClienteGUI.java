@@ -1,7 +1,5 @@
 package Chat;
 
-import MenuCliente.MenuClienteGUI;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -101,13 +99,6 @@ public class ChatClienteGUI {
             }
         });
 
-        volverButton.addActionListener(e -> {
-            JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(panel);
-            if (jFrame != null) {
-                jFrame.dispose();
-            }
-            MenuClienteGUI.main(null);
-        });
     }
 
     private void enviarMensaje() {
