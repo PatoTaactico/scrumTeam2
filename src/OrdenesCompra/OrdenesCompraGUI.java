@@ -154,7 +154,13 @@ public class OrdenesCompraGUI {
             campo.setEditable(false);
         }
 
-        estadoCompra = new JComboBox<>(new String[]{"pendiente", "pagada", "enviada"});
+        // Solo agregar items si está vacío
+        if (estadoCompra.getItemCount() == 0) {
+            estadoCompra.addItem("pendiente");
+            estadoCompra.addItem("pagada");
+            estadoCompra.addItem("enviada");
+        }
+
         estadoCompra.setFont(fuenteCampos);
         estadoCompra.setBackground(Color.WHITE);
         estadoCompra.setForeground(colorTexto);

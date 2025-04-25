@@ -78,8 +78,8 @@ public class MenuPrincipalGUI {
     private JButton crearBoton(String texto) {
         JButton boton = new JButton(texto);
         boton.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-        boton.setBackground(new Color(133, 102, 77));
-        boton.setForeground(Color.WHITE);
+        boton.setBackground(new Color(255, 182, 75));
+        boton.setForeground(Color.BLACK);
         boton.setFocusPainted(false);
         boton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
