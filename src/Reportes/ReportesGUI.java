@@ -3,6 +3,7 @@ package Reportes;
 import MenuPrincipal.MenuPrincipalGUI;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.ResultSet;
@@ -135,7 +136,16 @@ public class ReportesGUI extends JPanel {
 
     private void cargarDatosVentas() {
         ResultSet rsVentas = reportesDAO.obtenerVentasFiltradas("Diario");
-        DefaultTableModel modeloVentas = new DefaultTableModel();
+
+        // Modelo personalizado para permitir editar solo la columna "Estado"
+        DefaultTableModel modeloVentas = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Solo permitir editar la columna "Estado" (índice 3)
+                return column == 3;
+            }
+        };
+
         modeloVentas.setColumnIdentifiers(new String[]{"ID Venta", "Total", "Fecha", "Estado"});
 
         try {
@@ -148,6 +158,28 @@ public class ReportesGUI extends JPanel {
                 });
             }
             table1.setModel(modeloVentas);
+
+            // Agregar un listener para actualizar el estado en la base de datos
+            modeloVentas.addTableModelListener(e -> {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    int fila = e.getFirstRow();
+                    int columna = e.getColumn();
+
+                    // Verificar si la columna editada es "Estado"
+                    if (columna == 3) {
+                        int idVenta = (int) modeloVentas.getValueAt(fila, 0);
+                        String nuevoEstado = (String) modeloVentas.getValueAt(fila, columna);
+
+                        boolean actualizado = reportesDAO.actualizarEstadoVenta(idVenta, nuevoEstado);
+                        if (actualizado) {
+                            JOptionPane.showMessageDialog(null, "Estado actualizado correctamente.");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Error al actualizar el estado.");
+                        }
+                    }
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }

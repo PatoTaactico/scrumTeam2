@@ -139,7 +139,7 @@
         </constraints>
         <properties>
           <model>
-            <item value="Pendiente"/>
+            <item value="pendiente"/>
             <item value="pagada"/>
             <item value="enviada"/>
           </model>
