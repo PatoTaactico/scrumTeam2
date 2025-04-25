@@ -1,6 +1,7 @@
 package Reportes;
 
 import Conexion.ConexionBD;
+import MenuPrincipal.MenuPrincipalGUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -46,6 +47,15 @@ public class ReportesGUI extends JFrame {
                     "No se pudo establecer conexión con la base de datos.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+
+        volverButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(volverButton);
+                jFrame.dispose();
+                MenuPrincipalGUI.main(null);
+            }
+        });
     }
 
     public ReportesGUI(Connection conexion) {
